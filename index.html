@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLCP 2026 — CW Inlet Trend Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root {
+  --red:    #C0392B; --red-lt: #FADBD8; --red-dk: #922B21;
+  --dark:   #1A1A2E; --mid:    #2E4057;
+  --grey:   #5D6D7E; --grey-lt:#F2F3F4;
+  --blue:   #2E86C1; --blue-lt:#D6EAF8;
+  --green:  #1A7A4A; --green-lt:#D5F5E3;
+  --warn:   #E67E22; --warn-lt:#FDEBD0;
+  --white:  #FFFFFF; --border: #D5D8DC;
+  --mono:   'JetBrains Mono', monospace;
+  --sans:   'DM Sans', sans-serif;
+  --serif:  'DM Serif Display', serif;
+  --display:'Bebas Neue', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: #F4F6F8; color: var(--dark); }
+
+/* HEADER */
+.hdr { background: var(--dark); border-bottom: 4px solid var(--red); padding: 0 40px; display: flex; align-items: stretch; justify-content: space-between; }
+.hdr-left { padding: 24px 0; }
+.hdr-eye  { font-family: var(--mono); font-size: 10px; color: #8899AA; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+.hdr-title{ font-family: var(--display); font-size: 38px; color: white; letter-spacing: 2px; line-height: 1; }
+.hdr-sub  { font-family: var(--sans); font-size: 12px; color: #6677AA; margin-top: 6px; font-weight: 300; }
+.hdr-right{ display: flex; flex-direction: column; justify-content: center; gap: 5px; padding: 16px 0; }
+.badge { font-family: var(--mono); font-size: 10px; padding: 4px 10px; border-radius: 2px; letter-spacing: 1px; }
+.badge-red  { background: var(--red); color: white; }
+.badge-blue { background: #1A3A5C; color: #8899AA; }
+
+/* MAIN */
+.main { max-width: 1280px; margin: 0 auto; padding: 32px 40px 80px; }
+
+/* STATUS STRIP */
+.status-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 28px; }
+.stat { background: white; border: 1px solid var(--border); padding: 18px 18px 14px; position: relative; overflow: hidden; }
+.stat::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+.stat.above::before { background: var(--warn); }
+.stat.track::before { background: var(--green); }
+.stat.info::before  { background: var(--blue); }
+.stat.alert::before { background: var(--red); }
+.stat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--grey); margin-bottom: 8px; }
+.stat-val   { font-family: var(--display); font-size: 30px; letter-spacing: 1px; line-height: 1; }
+.stat-val.red  { color: var(--red); }
+.stat-val.warn { color: var(--warn); }
+.stat-val.blue { color: var(--blue); }
+.stat-val.green{ color: var(--green); }
+.stat-sub   { font-size: 11px; color: var(--grey); margin-top: 5px; font-weight: 300; }
+
+/* UPLOAD ZONE */
+.upload-section { background: white; border: 1px solid var(--border); padding: 24px; margin-bottom: 24px; }
+.upload-title { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--grey); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.upload-zone {
+  border: 2px dashed var(--border); border-radius: 4px; padding: 28px; text-align: center;
+  cursor: pointer; transition: all .2s; background: #FAFBFC; position: relative;
+}
+.upload-zone:hover, .upload-zone.drag { border-color: var(--blue); background: var(--blue-lt); }
+.upload-zone.loaded { border-color: var(--green); background: var(--green-lt); border-style: solid; }
+.upload-icon { font-size: 28px; margin-bottom: 10px; }
+.upload-text { font-size: 13px; color: var(--grey); }
+.upload-text strong { color: var(--blue); }
+.upload-text.loaded-text { color: var(--green); font-weight: 600; }
+.upload-format { font-family: var(--mono); font-size: 10px; color: var(--grey); margin-top: 8px; }
+input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+/* GRID */
+.grid-main { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.card { background: white; border: 1px solid var(--border); padding: 24px; }
+.card-title { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--grey); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.chart-wrap { position: relative; height: 340px; }
+.chart-wrap-sm { position: relative; height: 220px; }
+
+/* DEVIATION TABLE */
+.dev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.tbl th { background: var(--dark); color: white; font-family: var(--mono); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 9px 10px; text-align: left; }
+.tbl td { padding: 8px 10px; border-bottom: 1px solid #EAECEE; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: var(--grey-lt); }
+.num { text-align: right; font-family: var(--mono); }
+.above { color: var(--warn); font-weight: 600; }
+.below { color: var(--green); font-weight: 600; }
+.on-track { color: var(--blue); }
+
+/* LEGEND */
+.legend { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 16px; }
+.leg-item { display: flex; align-items: center; gap: 7px; font-size: 12px; }
+.leg-line { width: 28px; height: 3px; border-radius: 2px; }
+.leg-line.dashed { background: repeating-linear-gradient(90deg,var(--grey) 0,var(--grey) 5px,transparent 5px,transparent 9px); }
+
+/* ALERT BOXES */
+.alert-box { padding: 12px 14px 12px 18px; border-left: 4px solid var(--warn); background: var(--warn-lt); margin-bottom: 14px; font-size: 12.5px; color: #7E5109; }
+.info-box  { padding: 12px 14px 12px 18px; border-left: 4px solid var(--blue); background: var(--blue-lt); margin-bottom: 14px; font-size: 12.5px; color: #1A5276; }
+.ok-box    { padding: 12px 14px 12px 18px; border-left: 4px solid var(--green); background: var(--green-lt); margin-bottom: 14px; font-size: 12.5px; color: #0E6B3A; }
+.box-lbl { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; display: block; margin-bottom: 3px; }
+
+/* PROJECTION NOTE */
+.proj-note { font-family: var(--mono); font-size: 11px; color: var(--grey); }
+
+/* TOGGLE BUTTONS */
+.toggle-group { display: flex; gap: 8px; }
+.tog { font-family: var(--mono); font-size: 9px; padding: 4px 10px; border: 1px solid var(--border); background: white; color: var(--grey); cursor: pointer; border-radius: 2px; letter-spacing: 1px; transition: all .15s; }
+.tog.on { border-color: currentColor; font-weight: 700; }
+.tog.c-2024.on { color: var(--grey); background: #F0F0F0; }
+.tog.c-proj.on { color: var(--blue); background: var(--blue-lt); border-color: var(--blue); }
+.tog.c-actual.on { color: var(--red); background: var(--red-lt); border-color: var(--red); }
+.tog.c-outfall.on { color: var(--warn); background: var(--warn-lt); border-color: var(--warn); }
+
+/* SCROLLABLE TABLE */
+.tbl-scroll { max-height: 280px; overflow-y: auto; }
+.tbl-scroll .tbl thead { position: sticky; top: 0; z-index: 2; }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-eye">BLCP Power · Unit-1 · Cooling Water Analysis</div>
+    <div class="hdr-title">CW INLET TREND TRACKER</div>
+    <div class="hdr-sub">2026 Actual vs 2024 Pattern Projection &nbsp;·&nbsp; March – May 2026</div>
+  </div>
+  <div class="hdr-right">
+    <span class="badge badge-red">LIVE TRACKING</span>
+    <span class="badge badge-blue">2024 PATTERN · SHIFT −0.647°C</span>
+    <span class="badge badge-blue">DATA: 1–12 MAR 2026</span>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- STATUS STRIP -->
+  <div class="status-strip">
+    <div class="stat above">
+      <div class="stat-label">Mar 1–12 Avg Delta</div>
+      <div class="stat-val warn">+0.25°C</div>
+      <div class="stat-sub">Actual above projection</div>
+    </div>
+    <div class="stat above">
+      <div class="stat-label">Max Single-Day Delta</div>
+      <div class="stat-val warn">+0.33°C</div>
+      <div class="stat-sub">3 Mar 2026</div>
+    </div>
+    <div class="stat info">
+      <div class="stat-label">Data Coverage</div>
+      <div class="stat-val blue">12</div>
+      <div class="stat-sub">days loaded (1–12 Mar)</div>
+    </div>
+    <div class="stat alert">
+      <div class="stat-label">Trend Assessment</div>
+      <div class="stat-val red">▲ ABOVE</div>
+      <div class="stat-sub">All 12 days above projection</div>
+    </div>
+  </div>
+
+  <!-- DATA SOURCE -->
+  <div class="upload-section">
+    <div class="upload-title">
+      <span>📡 Data Source</span>
+      <span id="upload-status" style="font-size:11px;color:var(--green)"></span>
+    </div>
+
+    <!-- Auto-load status bar -->
+    <div id="autoload-bar" style="display:flex;align-items:center;gap:14px;padding:12px 14px;background:#F0F9F4;border:1px solid #A9DFBF;border-radius:3px;margin-bottom:14px;">
+      <span id="autoload-icon" style="font-size:20px;">⏳</span>
+      <div style="flex:1;">
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--grey);text-transform:uppercase;">Auto-loading from GitHub</div>
+        <div id="autoload-msg" style="font-size:12px;color:#1A7A4A;margin-top:2px;">Fetching seawater_data.csv …</div>
+      </div>
+      <button onclick="loadCSVFromGitHub()" style="font-family:var(--mono);font-size:9px;padding:5px 12px;border:1px solid var(--blue);background:white;color:var(--blue);cursor:pointer;border-radius:2px;letter-spacing:1px;">↻ RELOAD</button>
+    </div>
+
+    <!-- Manual override -->
+    <details style="margin-top:4px;">
+      <summary style="font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--grey);cursor:pointer;user-select:none;">▸ MANUAL OVERRIDE — upload local file</summary>
+      <div style="margin-top:12px;">
+        <div class="upload-zone" id="dropzone">
+          <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" onchange="handleFile(this.files[0])">
+          <div class="upload-icon">📊</div>
+          <div class="upload-text" id="upload-text">
+            <strong>Click to upload</strong> or drag & drop your actual data file<br>
+            <span class="upload-format">Expected columns: datetime | inlet | outlet | outfall<br>Format: hourly rows — XLSX or CSV</span>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <div id="upload-info" style="margin-top:12px;display:none;">
+      <div class="ok-box" style="margin-bottom:0;">
+        <span class="box-lbl">Loaded Successfully</span>
+        <span id="upload-detail"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CHART -->
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-title">
+      <span>CW Inlet Temperature — Daily Mean &amp; Range · Mar–May 2026</span>
+      <div class="toggle-group">
+        <button class="tog c-2024 on"  onclick="toggleSeries('2024',this)">2024 PATTERN</button>
+        <button class="tog c-proj on"  onclick="toggleSeries('proj',this)">PROJECTION</button>
+        <button class="tog c-actual on" onclick="toggleSeries('actual',this)">2026 ACTUAL</button>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="leg-item"><div class="leg-line" style="background:#B0B8C0;height:2px;border-top:2px dashed #B0B8C0;background:none;"></div><span style="color:var(--grey)">2024 Pattern (reference)</span></div>
+      <div class="leg-item"><div class="leg-line" style="background:var(--blue);"></div><span style="color:var(--blue)">2026 Projection (2024 − 0.647°C)</span></div>
+      <div class="leg-item"><div class="leg-line" style="background:var(--red);"></div><span style="color:var(--red)">2026 Actual</span></div>
+      <div class="leg-item"><div class="leg-line" style="background:#1A1A2E;height:1px;border-top:2px dotted #C0392B;background:none;"></div><span style="color:var(--grey);font-size:11px">Shaded band = daily min–max range</span></div>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="mainChart"></canvas>
+    </div>
+  </div>
+
+  <!-- DEVIATION + TABLE -->
+  <div class="dev-grid">
+    <div class="card">
+      <div class="card-title">Daily Deviation: Actual vs Projection</div>
+      <div class="chart-wrap-sm">
+        <canvas id="deviationChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <span>Tracking Table — 2026 Actual</span>
+        <span class="proj-note" id="data-count">12 days loaded</span>
+      </div>
+      <div class="tbl-scroll">
+        <table class="tbl" id="trackingTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th class="num">Actual Mean</th>
+              <th class="num">Proj. Mean</th>
+              <th class="num">Delta</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="trackingBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTFALL TRACKING -->
+  <div class="card" style="margin-top:24px;">
+    <div class="card-title">
+      <span>Outlet &amp; Outfall Temperature — Actual (Mar 2026)</span>
+      <div class="toggle-group">
+        <button class="tog c-outfall on" onclick="toggleSeries('outfall',this)">OUTFALL</button>
+        <button class="tog c-proj on" id="outletTogBtn" onclick="toggleSeries('outlet',this)">OUTLET</button>
+      </div>
+    </div>
+    <div class="alert-box">
+      <span class="box-lbl">EIA Reference Limits</span>
+      CW Outfall ≤ <strong>40.0°C</strong> (legal limit) &nbsp;|&nbsp; Alarm at <strong>39.8°C</strong> &nbsp;|&nbsp; Current Mar 2026 max outfall: <strong id="maxOutfall">—</strong>°C
+    </div>
+    <div class="chart-wrap">
+      <canvas id="outfallChart"></canvas>
+    </div>
+  </div>
+
+  <!-- INTERPRETATION -->
+  <div style="margin-top:24px;" class="card">
+    <div class="card-title">Trend Interpretation</div>
+    <div class="alert-box">
+      <span class="box-lbl">⚠ Actual is Tracking ABOVE Projection</span>
+      All 12 days of actual Mar 2026 data are <strong>above the 2024-pattern projection</strong> by +0.12 to +0.33°C (avg +0.25°C). 
+      If this positive bias persists into April–May, the effective inlet temperatures in peak season could be <strong>~0.25°C higher</strong> than currently projected — potentially shifting load reduction trigger dates earlier.
+    </div>
+    <div class="info-box" style="margin-bottom:0;">
+      <span class="box-lbl">Interpretation Note</span>
+      The −0.647°C shift was derived from March monthly means (Mar 2024 vs Mar 2026). 
+      However, actual data shows 2026 March is tracking closer to 2024 levels than the monthly mean shift implied. 
+      <strong>Consider re-evaluating the projection shift as more actual data becomes available.</strong>
+      Upload additional files above to update the tracker as data comes in.
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════════════════
+// EMBEDDED BASE DATA
+// ═══════════════════════════════════════════════════
+const DATA_2024 = [{"date":"2026-03-01","mean":31.093,"max":31.391,"min":30.872},{"date":"2026-03-02","mean":31.16,"max":31.437,"min":30.897},{"date":"2026-03-03","mean":31.261,"max":31.53,"min":31.023},{"date":"2026-03-04","mean":31.24,"max":31.567,"min":30.985},{"date":"2026-03-05","mean":31.387,"max":31.741,"min":31.127},{"date":"2026-03-06","mean":31.466,"max":31.724,"min":31.261},{"date":"2026-03-07","mean":31.562,"max":32.007,"min":31.328},{"date":"2026-03-08","mean":31.653,"max":31.812,"min":31.499},{"date":"2026-03-09","mean":31.63,"max":31.729,"min":31.555},{"date":"2026-03-10","mean":31.564,"max":31.739,"min":31.451},{"date":"2026-03-11","mean":31.566,"max":31.725,"min":31.395},{"date":"2026-03-12","mean":31.45,"max":31.584,"min":31.33},{"date":"2026-03-13","mean":31.317,"max":31.46,"min":31.233},{"date":"2026-03-14","mean":31.36,"max":31.563,"min":31.169},{"date":"2026-03-15","mean":31.424,"max":31.654,"min":31.213},{"date":"2026-03-16","mean":31.373,"max":31.555,"min":31.241},{"date":"2026-03-17","mean":31.31,"max":31.62,"min":31.161},{"date":"2026-03-18","mean":31.448,"max":31.767,"min":31.214},{"date":"2026-03-19","mean":31.658,"max":32.01,"min":31.412},{"date":"2026-03-20","mean":31.457,"max":31.613,"min":31.305},{"date":"2026-03-21","mean":31.29,"max":31.481,"min":31.174},{"date":"2026-03-22","mean":31.252,"max":31.41,"min":31.188},{"date":"2026-03-23","mean":31.296,"max":31.42,"min":31.225},{"date":"2026-03-24","mean":31.344,"max":31.608,"min":31.137},{"date":"2026-03-25","mean":31.389,"max":31.586,"min":31.246},{"date":"2026-03-26","mean":31.513,"max":31.72,"min":31.313},{"date":"2026-03-27","mean":31.731,"max":32.109,"min":31.484},{"date":"2026-03-28","mean":31.792,"max":32.007,"min":31.622},{"date":"2026-03-29","mean":31.973,"max":32.287,"min":31.694},{"date":"2026-03-30","mean":32.245,"max":32.489,"min":32.009},{"date":"2026-03-31","mean":32.458,"max":32.637,"min":32.275},{"date":"2026-04-01","mean":32.485,"max":32.739,"min":32.219},{"date":"2026-04-02","mean":32.619,"max":32.817,"min":32.397},{"date":"2026-04-03","mean":32.787,"max":33.121,"min":32.608},{"date":"2026-04-04","mean":32.901,"max":33.204,"min":32.653},{"date":"2026-04-05","mean":32.971,"max":33.309,"min":32.736},{"date":"2026-04-06","mean":32.978,"max":33.238,"min":32.752},{"date":"2026-04-07","mean":32.899,"max":33.24,"min":32.695},{"date":"2026-04-08","mean":32.808,"max":33.116,"min":32.568},{"date":"2026-04-09","mean":32.842,"max":33.145,"min":32.598},{"date":"2026-04-10","mean":32.941,"max":33.206,"min":32.706},{"date":"2026-04-11","mean":33.005,"max":33.266,"min":32.85},{"date":"2026-04-12","mean":32.981,"max":33.204,"min":32.785},{"date":"2026-04-13","mean":33.038,"max":33.37,"min":32.779},{"date":"2026-04-14","mean":33.104,"max":33.413,"min":32.869},{"date":"2026-04-15","mean":33.113,"max":33.407,"min":32.867},{"date":"2026-04-16","mean":33.097,"max":33.552,"min":32.85},{"date":"2026-04-17","mean":33.037,"max":33.442,"min":32.692},{"date":"2026-04-18","mean":33.075,"max":33.422,"min":32.813},{"date":"2026-04-19","mean":33.026,"max":33.331,"min":32.766},{"date":"2026-04-20","mean":33.013,"max":33.223,"min":32.776},{"date":"2026-04-21","mean":33.179,"max":33.527,"min":32.947},{"date":"2026-04-22","mean":33.253,"max":33.419,"min":33.034},{"date":"2026-04-23","mean":33.273,"max":33.432,"min":33.083},{"date":"2026-04-24","mean":33.303,"max":33.576,"min":33.09},{"date":"2026-04-25","mean":33.393,"max":33.589,"min":33.185},{"date":"2026-04-26","mean":33.4,"max":33.643,"min":33.146},{"date":"2026-04-27","mean":33.428,"max":33.601,"min":33.26},{"date":"2026-04-28","mean":33.467,"max":33.733,"min":33.245},{"date":"2026-04-29","mean":33.504,"max":33.711,"min":33.354},{"date":"2026-04-30","mean":33.526,"max":33.792,"min":33.303},{"date":"2026-05-01","mean":33.6,"max":33.932,"min":33.413},{"date":"2026-05-02","mean":33.708,"max":34.195,"min":33.419},{"date":"2026-05-03","mean":33.8,"max":34.151,"min":33.55},{"date":"2026-05-04","mean":33.9,"max":34.223,"min":33.632},{"date":"2026-05-05","mean":33.926,"max":34.14,"min":33.716},{"date":"2026-05-06","mean":34.034,"max":34.281,"min":33.816},{"date":"2026-05-07","mean":33.688,"max":34.031,"min":33.348},{"date":"2026-05-08","mean":33.442,"max":33.656,"min":33.279},{"date":"2026-05-09","mean":33.505,"max":33.806,"min":33.364},{"date":"2026-05-10","mean":33.416,"max":33.612,"min":33.312},{"date":"2026-05-11","mean":33.468,"max":33.791,"min":33.242},{"date":"2026-05-12","mean":33.601,"max":33.927,"min":33.366},{"date":"2026-05-13","mean":33.42,"max":33.576,"min":33.29},{"date":"2026-05-14","mean":33.449,"max":33.772,"min":33.178},{"date":"2026-05-15","mean":33.445,"max":34.037,"min":33.167},{"date":"2026-05-16","mean":33.267,"max":33.5,"min":33.161},{"date":"2026-05-17","mean":33.31,"max":33.591,"min":33.064},{"date":"2026-05-18","mean":33.298,"max":33.493,"min":33.124},{"date":"2026-05-19","mean":33.258,"max":33.53,"min":33.063},{"date":"2026-05-20","mean":33.177,"max":33.362,"min":33.023},{"date":"2026-05-21","mean":33.01,"max":33.207,"min":32.808},{"date":"2026-05-22","mean":32.817,"max":32.993,"min":32.692},{"date":"2026-05-23","mean":32.707,"max":32.847,"min":32.527},{"date":"2026-05-24","mean":32.503,"max":32.668,"min":32.148},{"date":"2026-05-25","mean":32.597,"max":32.818,"min":32.407},{"date":"2026-05-26","mean":32.729,"max":33.029,"min":32.495},{"date":"2026-05-27","mean":32.897,"max":33.269,"min":32.613},{"date":"2026-05-28","mean":32.726,"max":32.931,"min":32.528},{"date":"2026-05-29","mean":32.531,"max":32.741,"min":32.411},{"date":"2026-05-30","mean":32.526,"max":32.894,"min":32.232},{"date":"2026-05-31","mean":32.422,"max":32.656,"min":32.235}];
+
+const DATA_PROJ = [{"date":"2026-03-01","mean":30.446,"max":30.744,"min":30.225},{"date":"2026-03-02","mean":30.513,"max":30.79,"min":30.25},{"date":"2026-03-03","mean":30.614,"max":30.883,"min":30.376},{"date":"2026-03-04","mean":30.593,"max":30.92,"min":30.338},{"date":"2026-03-05","mean":30.74,"max":31.094,"min":30.48},{"date":"2026-03-06","mean":30.819,"max":31.077,"min":30.614},{"date":"2026-03-07","mean":30.915,"max":31.36,"min":30.681},{"date":"2026-03-08","mean":31.006,"max":31.165,"min":30.852},{"date":"2026-03-09","mean":30.983,"max":31.082,"min":30.908},{"date":"2026-03-10","mean":30.917,"max":31.092,"min":30.804},{"date":"2026-03-11","mean":30.919,"max":31.078,"min":30.748},{"date":"2026-03-12","mean":30.803,"max":30.937,"min":30.683},{"date":"2026-03-13","mean":30.67,"max":30.813,"min":30.586},{"date":"2026-03-14","mean":30.713,"max":30.916,"min":30.522},{"date":"2026-03-15","mean":30.777,"max":31.007,"min":30.566},{"date":"2026-03-16","mean":30.726,"max":30.908,"min":30.594},{"date":"2026-03-17","mean":30.663,"max":30.973,"min":30.514},{"date":"2026-03-18","mean":30.801,"max":31.12,"min":30.567},{"date":"2026-03-19","mean":31.011,"max":31.363,"min":30.765},{"date":"2026-03-20","mean":30.81,"max":30.966,"min":30.658},{"date":"2026-03-21","mean":30.643,"max":30.834,"min":30.527},{"date":"2026-03-22","mean":30.605,"max":30.763,"min":30.541},{"date":"2026-03-23","mean":30.649,"max":30.773,"min":30.578},{"date":"2026-03-24","mean":30.697,"max":30.961,"min":30.49},{"date":"2026-03-25","mean":30.742,"max":30.939,"min":30.599},{"date":"2026-03-26","mean":30.866,"max":31.073,"min":30.666},{"date":"2026-03-27","mean":31.084,"max":31.462,"min":30.837},{"date":"2026-03-28","mean":31.145,"max":31.36,"min":30.975},{"date":"2026-03-29","mean":31.326,"max":31.64,"min":31.047},{"date":"2026-03-30","mean":31.598,"max":31.842,"min":31.362},{"date":"2026-03-31","mean":31.811,"max":31.99,"min":31.628},{"date":"2026-04-01","mean":31.838,"max":32.092,"min":31.572},{"date":"2026-04-02","mean":31.972,"max":32.17,"min":31.75},{"date":"2026-04-03","mean":32.14,"max":32.474,"min":31.961},{"date":"2026-04-04","mean":32.254,"max":32.557,"min":32.006},{"date":"2026-04-05","mean":32.324,"max":32.662,"min":32.089},{"date":"2026-04-06","mean":32.331,"max":32.591,"min":32.105},{"date":"2026-04-07","mean":32.252,"max":32.593,"min":32.048},{"date":"2026-04-08","mean":32.161,"max":32.469,"min":31.921},{"date":"2026-04-09","mean":32.195,"max":32.498,"min":31.951},{"date":"2026-04-10","mean":32.294,"max":32.559,"min":32.059},{"date":"2026-04-11","mean":32.358,"max":32.619,"min":32.203},{"date":"2026-04-12","mean":32.334,"max":32.557,"min":32.138},{"date":"2026-04-13","mean":32.391,"max":32.723,"min":32.132},{"date":"2026-04-14","mean":32.457,"max":32.766,"min":32.222},{"date":"2026-04-15","mean":32.466,"max":32.76,"min":32.22},{"date":"2026-04-16","mean":32.45,"max":32.905,"min":32.203},{"date":"2026-04-17","mean":32.39,"max":32.795,"min":32.045},{"date":"2026-04-18","mean":32.428,"max":32.775,"min":32.166},{"date":"2026-04-19","mean":32.379,"max":32.684,"min":32.119},{"date":"2026-04-20","mean":32.366,"max":32.576,"min":32.129},{"date":"2026-04-21","mean":32.532,"max":32.88,"min":32.3},{"date":"2026-04-22","mean":32.606,"max":32.772,"min":32.387},{"date":"2026-04-23","mean":32.626,"max":32.785,"min":32.436},{"date":"2026-04-24","mean":32.656,"max":32.929,"min":32.443},{"date":"2026-04-25","mean":32.746,"max":32.942,"min":32.538},{"date":"2026-04-26","mean":32.753,"max":32.996,"min":32.499},{"date":"2026-04-27","mean":32.781,"max":32.954,"min":32.613},{"date":"2026-04-28","mean":32.82,"max":33.086,"min":32.598},{"date":"2026-04-29","mean":32.857,"max":33.064,"min":32.707},{"date":"2026-04-30","mean":32.879,"max":33.145,"min":32.656},{"date":"2026-05-01","mean":32.953,"max":33.285,"min":32.766},{"date":"2026-05-02","mean":33.061,"max":33.548,"min":32.772},{"date":"2026-05-03","mean":33.153,"max":33.504,"min":32.903},{"date":"2026-05-04","mean":33.253,"max":33.576,"min":32.985},{"date":"2026-05-05","mean":33.279,"max":33.493,"min":33.069},{"date":"2026-05-06","mean":33.387,"max":33.634,"min":33.169},{"date":"2026-05-07","mean":33.041,"max":33.384,"min":32.701},{"date":"2026-05-08","mean":32.795,"max":33.009,"min":32.632},{"date":"2026-05-09","mean":32.858,"max":33.159,"min":32.717},{"date":"2026-05-10","mean":32.769,"max":32.965,"min":32.665},{"date":"2026-05-11","mean":32.821,"max":33.144,"min":32.595},{"date":"2026-05-12","mean":32.954,"max":33.28,"min":32.719},{"date":"2026-05-13","mean":32.773,"max":32.929,"min":32.643},{"date":"2026-05-14","mean":32.802,"max":33.125,"min":32.531},{"date":"2026-05-15","mean":32.798,"max":33.39,"min":32.52},{"date":"2026-05-16","mean":32.62,"max":32.853,"min":32.514},{"date":"2026-05-17","mean":32.663,"max":32.944,"min":32.417},{"date":"2026-05-18","mean":32.651,"max":32.846,"min":32.477},{"date":"2026-05-19","mean":32.611,"max":32.883,"min":32.416},{"date":"2026-05-20","mean":32.53,"max":32.715,"min":32.376},{"date":"2026-05-21","mean":32.363,"max":32.56,"min":32.161},{"date":"2026-05-22","mean":32.17,"max":32.346,"min":32.045},{"date":"2026-05-23","mean":32.06,"max":32.2,"min":31.88},{"date":"2026-05-24","mean":31.856,"max":32.021,"min":31.501},{"date":"2026-05-25","mean":31.95,"max":32.171,"min":31.76},{"date":"2026-05-26","mean":32.082,"max":32.382,"min":31.848},{"date":"2026-05-27","mean":32.25,"max":32.622,"min":31.966},{"date":"2026-05-28","mean":32.079,"max":32.284,"min":31.881},{"date":"2026-05-29","mean":31.884,"max":32.094,"min":31.764},{"date":"2026-05-30","mean":31.879,"max":32.247,"min":31.585},{"date":"2026-05-31","mean":31.775,"max":32.009,"min":31.588}];
+
+let DATA_ACTUAL = [{"date":"2026-03-01","mean":30.772,"max":31.143,"min":30.47,"outlet_mean":36.966,"outfall_mean":37.851},{"date":"2026-03-02","mean":30.822,"max":31.25,"min":30.521,"outlet_mean":37.089,"outfall_mean":38.004},{"date":"2026-03-03","mean":30.929,"max":31.288,"min":30.715,"outlet_mean":37.194,"outfall_mean":38.104},{"date":"2026-03-04","mean":30.908,"max":31.217,"min":30.704,"outlet_mean":37.191,"outfall_mean":38.086},{"date":"2026-03-05","mean":30.888,"max":31.133,"min":30.696,"outlet_mean":37.166,"outfall_mean":38.05},{"date":"2026-03-06","mean":30.938,"max":31.24,"min":30.711,"outlet_mean":37.212,"outfall_mean":38.084},{"date":"2026-03-07","mean":31.094,"max":31.335,"min":30.945,"outlet_mean":37.362,"outfall_mean":38.215},{"date":"2026-03-08","mean":31.27,"max":31.707,"min":31.024,"outlet_mean":37.448,"outfall_mean":38.314},{"date":"2026-03-09","mean":31.22,"max":31.523,"min":30.953,"outlet_mean":37.494,"outfall_mean":38.365},{"date":"2026-03-10","mean":31.158,"max":31.3,"min":31.02,"outlet_mean":37.438,"outfall_mean":38.298},{"date":"2026-03-11","mean":31.133,"max":31.275,"min":31.05,"outlet_mean":37.37,"outfall_mean":38.028},{"date":"2026-03-12","mean":31.118,"max":31.199,"min":30.996,"outlet_mean":37.363,"outfall_mean":37.895}];
+
+// ═══════════════════════════════════════════════════
+// CHART SETUP
+// ═══════════════════════════════════════════════════
+const LABELS = DATA_2024.map(d => {
+  const dt = new Date(d.date);
+  return `${dt.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun'][dt.getMonth()]}`;
+});
+
+const projDict = {};
+DATA_PROJ.forEach(d => projDict[d.date] = d);
+
+let mainChart, devChart, outfallChart;
+const visibility = { '2024': true, 'proj': true, 'actual': true, 'outfall': true, 'outlet': true };
+
+function buildMainChart() {
+  const ctx = document.getElementById('mainChart').getContext('2d');
+
+  // Build actual aligned to full date array
+  const actualMean = DATA_2024.map(d => {
+    const a = DATA_ACTUAL.find(x => x.date === d.date);
+    return a ? a.mean : null;
+  });
+  const actualMax = DATA_2024.map(d => {
+    const a = DATA_ACTUAL.find(x => x.date === d.date);
+    return a ? a.max : null;
+  });
+  const actualMin = DATA_2024.map(d => {
+    const a = DATA_ACTUAL.find(x => x.date === d.date);
+    return a ? a.min : null;
+  });
+
+  mainChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: LABELS,
+      datasets: [
+        // 2024 band
+        { label: '2024 Max', data: DATA_2024.map(d=>d.max), borderColor:'transparent', backgroundColor:'rgba(176,184,192,0.15)', fill:'+1', pointRadius:0, tension:0.3 },
+        { label: '2024 Min', data: DATA_2024.map(d=>d.min), borderColor:'transparent', backgroundColor:'rgba(176,184,192,0.15)', fill:false, pointRadius:0, tension:0.3 },
+        // 2024 mean
+        { label: '2024 Pattern', data: DATA_2024.map(d=>d.mean), borderColor:'#B0B8C0', borderDash:[5,4], borderWidth:1.5, backgroundColor:'transparent', fill:false, pointRadius:0, tension:0.3 },
+        // Projection band
+        { label: 'Proj Max', data: DATA_PROJ.map(d=>d.max), borderColor:'transparent', backgroundColor:'rgba(46,134,193,0.10)', fill:'+1', pointRadius:0, tension:0.3 },
+        { label: 'Proj Min', data: DATA_PROJ.map(d=>d.min), borderColor:'transparent', backgroundColor:'rgba(46,134,193,0.10)', fill:false, pointRadius:0, tension:0.3 },
+        // Projection mean
+        { label: '2026 Projection', data: DATA_PROJ.map(d=>d.mean), borderColor:'#2E86C1', borderWidth:2, backgroundColor:'transparent', fill:false, pointRadius:0, tension:0.3 },
+        // Actual band
+        { label: 'Actual Max', data: actualMax, borderColor:'transparent', backgroundColor:'rgba(192,57,43,0.12)', fill:'+1', pointRadius:0, tension:0.3 },
+        { label: 'Actual Min', data: actualMin, borderColor:'transparent', backgroundColor:'rgba(192,57,43,0.12)', fill:false, pointRadius:0, tension:0.3 },
+        // Actual mean
+        { label: '2026 Actual', data: actualMean, borderColor:'#C0392B', borderWidth:2.5, backgroundColor:'transparent', fill:false, pointRadius:4, pointBackgroundColor:'#C0392B', tension:0.3 },
+        // Threshold line
+        { label: 'Load Reduce Threshold 33.2°C', data: DATA_2024.map(()=>33.2), borderColor:'rgba(230,126,34,0.5)', borderDash:[3,3], borderWidth:1.5, backgroundColor:'transparent', fill:false, pointRadius:0 },
+        { label: 'Low-S Trigger 31.5°C', data: DATA_2024.map(()=>31.5), borderColor:'rgba(46,134,193,0.4)', borderDash:[3,3], borderWidth:1.5, backgroundColor:'transparent', fill:false, pointRadius:0 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          filter: item => ['2024 Pattern','2026 Projection','2026 Actual'].includes(item.dataset.label),
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y?.toFixed(3)}°C`
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color:'#F0F0F0' }, ticks: { font:{ family:'JetBrains Mono', size:9 }, maxTicksLimit:20, maxRotation:45 } },
+        y: { min:29.5, title:{ display:true, text:'CW Inlet (°C)', font:{family:'DM Sans',size:11} }, grid:{ color:'#F0F0F0' }, ticks:{ font:{family:'JetBrains Mono',size:10} } }
+      }
+    }
+  });
+}
+
+function buildDeviationChart() {
+  const ctx = document.getElementById('deviationChart').getContext('2d');
+  const labels = DATA_ACTUAL.map(d => d.date.slice(5));
+  const deltas = DATA_ACTUAL.map(d => {
+    const p = projDict[d.date];
+    return p ? +(d.mean - p.mean).toFixed(3) : null;
+  });
+
+  devChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Actual − Projection (°C)',
+        data: deltas,
+        backgroundColor: deltas.map(v => v > 0 ? 'rgba(230,126,34,0.7)' : 'rgba(26,122,74,0.7)'),
+        borderColor:     deltas.map(v => v > 0 ? '#E67E22' : '#1A7A4A'),
+        borderWidth: 1, borderRadius: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => `Delta: ${c.parsed.y > 0 ? '+' : ''}${c.parsed.y}°C` } }
+      },
+      scales: {
+        x: { grid: { display:false }, ticks: { font:{family:'JetBrains Mono',size:9} } },
+        y: { title:{ display:true, text:'Δ°C (Actual − Proj)', font:{family:'DM Sans',size:10} }, grid:{ color:'#F0F0F0' }, ticks:{ font:{family:'JetBrains Mono',size:10} },
+             afterDataLimits: axis => { const m = Math.max(Math.abs(axis.min),Math.abs(axis.max),0.5); axis.min=-m; axis.max=m; } }
+      }
+    }
+  });
+}
+
+function buildOutfallChart() {
+  const ctx = document.getElementById('outfallChart').getContext('2d');
+  const labels = DATA_ACTUAL.map(d => d.date.slice(5));
+  const outfall = DATA_ACTUAL.map(d => d.outfall_mean);
+  const outlet  = DATA_ACTUAL.map(d => d.outlet_mean);
+
+  const maxOf = Math.max(...outfall.filter(Boolean));
+  document.getElementById('maxOutfall').textContent = maxOf.toFixed(2);
+
+  outfallChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Outfall (mean)', data: outfall, borderColor:'#E67E22', borderWidth:2.5, backgroundColor:'rgba(230,126,34,0.08)', fill:true, tension:0.3, pointRadius:4, pointBackgroundColor:'#E67E22' },
+        { label: 'Outlet Condenser (mean)', data: outlet, borderColor:'#2E86C1', borderWidth:2, backgroundColor:'transparent', fill:false, tension:0.3, pointRadius:3 },
+        { label: 'EIA Limit 40.0°C', data: labels.map(()=>40.0), borderColor:'rgba(192,57,43,0.6)', borderDash:[4,3], borderWidth:1.5, pointRadius:0, backgroundColor:'transparent' },
+        { label: 'Alarm 39.8°C',     data: labels.map(()=>39.8), borderColor:'rgba(230,126,34,0.5)', borderDash:[3,3], borderWidth:1.5, pointRadius:0, backgroundColor:'transparent' },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode:'index', intersect:false },
+      plugins: {
+        legend: { labels: { font:{family:'DM Sans',size:11}, boxWidth:14 } },
+        tooltip: { callbacks: { label: c => `${c.dataset.label}: ${c.parsed.y?.toFixed(3)}°C` } }
+      },
+      scales: {
+        x: { grid:{ color:'#F0F0F0' }, ticks:{ font:{family:'JetBrains Mono',size:10} } },
+        y: { min:36, title:{ display:true, text:'Temperature (°C)', font:{family:'DM Sans',size:11} }, grid:{ color:'#F0F0F0' }, ticks:{ font:{family:'JetBrains Mono',size:10} } }
+      }
+    }
+  });
+}
+
+function buildTrackingTable() {
+  const tbody = document.getElementById('trackingBody');
+  tbody.innerHTML = '';
+  DATA_ACTUAL.forEach(a => {
+    const p = projDict[a.date];
+    if (!p) return;
+    const delta = +(a.mean - p.mean).toFixed(3);
+    const sign  = delta > 0 ? '+' : '';
+    const cls   = delta > 0.1 ? 'above' : delta < -0.1 ? 'below' : 'on-track';
+    const label = delta > 0.1 ? '▲ ABOVE' : delta < -0.1 ? '▼ BELOW' : '≈ ON TRACK';
+    tbody.innerHTML += `<tr>
+      <td style="font-family:var(--mono);font-size:11px">${a.date}</td>
+      <td class="num">${a.mean.toFixed(3)}°C</td>
+      <td class="num">${p.mean.toFixed(3)}°C</td>
+      <td class="num ${cls}">${sign}${delta}°C</td>
+      <td><span class="tag" style="font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:2px;background:${cls==='above'?'var(--warn-lt)':cls==='below'?'var(--green-lt)':'var(--blue-lt)'};color:${cls==='above'?'var(--warn)':cls==='below'?'var(--green)':'var(--blue)'}">${label}</span></td>
+    </tr>`;
+  });
+  document.getElementById('data-count').textContent = DATA_ACTUAL.length + ' days loaded';
+}
+
+// ═══════════════════════════════════════════════════
+// TOGGLE SERIES
+// ═══════════════════════════════════════════════════
+function toggleSeries(key, btn) {
+  visibility[key] = !visibility[key];
+  btn.classList.toggle('on', visibility[key]);
+  // dataset indices: 0-1=2024band, 2=2024mean, 3-4=projband, 5=projmean, 6-7=actualband, 8=actualmean
+  const map = { '2024':[0,1,2], 'proj':[3,4,5], 'actual':[6,7,8] };
+  if (map[key]) {
+    map[key].forEach(i => { mainChart.data.datasets[i].hidden = !visibility[key]; });
+    mainChart.update();
+  }
+  if (key === 'outfall' || key === 'outlet') {
+    const idx = key === 'outfall' ? 0 : 1;
+    outfallChart.data.datasets[idx].hidden = !visibility[key];
+    outfallChart.update();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// FILE UPLOAD HANDLER
+// ═══════════════════════════════════════════════════
+function handleFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+
+  reader.onload = e => {
+    try {
+      let rows = [];
+
+      if (file.name.endsWith('.csv')) {
+        const lines = e.target.result.split('\n');
+        const header = lines[0].toLowerCase();
+        lines.slice(1).forEach(line => {
+          const parts = line.split(',');
+          if (parts.length < 2) return;
+          const dt = new Date(parts[0].trim());
+          if (isNaN(dt)) return;
+          rows.push({ dt, inlet: parseFloat(parts[1]), outlet: parseFloat(parts[2])||null, outfall: parseFloat(parts[3])||null });
+        });
+      } else {
+        const wb = XLSX.read(e.target.result, { type:'array', cellDates:true });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(ws, { header:1 });
+        json.slice(1).forEach(r => {
+          if (!r[0]) return;
+          const dt = r[0] instanceof Date ? r[0] : new Date(r[0]);
+          if (isNaN(dt)) return;
+          rows.push({ dt, inlet: parseFloat(r[1]), outlet: parseFloat(r[2])||null, outfall: parseFloat(r[3])||null });
+        });
+      }
+
+      // Aggregate to daily
+      const byDate = {};
+      rows.forEach(r => {
+        if (isNaN(r.inlet)) return;
+        const key = r.dt.toISOString().slice(0,10);
+        if (!byDate[key]) byDate[key] = { inlets:[], outlets:[], outfalls:[] };
+        byDate[key].inlets.push(r.inlet);
+        if (r.outlet) byDate[key].outlets.push(r.outlet);
+        if (r.outfall) byDate[key].outfalls.push(r.outfall);
+      });
+
+      const newActual = Object.keys(byDate).sort().map(date => {
+        const d = byDate[date];
+        const mean = v => v.length ? +(v.reduce((a,b)=>a+b)/v.length).toFixed(3) : null;
+        const max  = v => v.length ? +Math.max(...v).toFixed(3) : null;
+        const min  = v => v.length ? +Math.min(...v).toFixed(3) : null;
+        return { date, mean:mean(d.inlets), max:max(d.inlets), min:min(d.inlets), outlet_mean:mean(d.outlets), outfall_mean:mean(d.outfalls) };
+      });
+
+      if (newActual.length === 0) { alert('No valid data found. Check column format.'); return; }
+
+      // Merge with existing (replace same dates, add new)
+      const existingDates = new Set(DATA_ACTUAL.map(d=>d.date));
+      newActual.forEach(r => { if (!existingDates.has(r.date)) DATA_ACTUAL.push(r); else { const i = DATA_ACTUAL.findIndex(x=>x.date===r.date); DATA_ACTUAL[i]=r; } });
+      DATA_ACTUAL.sort((a,b)=>a.date.localeCompare(b.date));
+
+      // Refresh charts
+      refreshAllCharts();
+
+      // Update UI
+      document.getElementById('upload-text').innerHTML = `<span class="loaded-text">✓ Loaded: ${file.name}</span><br><span style="color:var(--grey);font-size:11px">${newActual.length} days parsed · ${DATA_ACTUAL.length} days total in tracker</span>`;
+      document.getElementById('dropzone').classList.add('loaded');
+      document.getElementById('upload-info').style.display = 'block';
+      document.getElementById('upload-detail').textContent = `${newActual.length} days parsed from file. Total actual data: ${DATA_ACTUAL.length} days (${DATA_ACTUAL[0].date} → ${DATA_ACTUAL[DATA_ACTUAL.length-1].date})`;
+      document.getElementById('upload-status').textContent = '✓ Updated';
+
+      // Recompute status strip
+      updateStatusStrip();
+
+    } catch(err) {
+      alert('Error parsing file: ' + err.message);
+    }
+  };
+
+  if (file.name.endsWith('.csv')) reader.readAsText(file);
+  else reader.readAsArrayBuffer(file);
+}
+
+function refreshAllCharts() {
+  // Rebuild actual series on main chart
+  const actualMean = DATA_2024.map(d => { const a = DATA_ACTUAL.find(x=>x.date===d.date); return a?a.mean:null; });
+  const actualMax  = DATA_2024.map(d => { const a = DATA_ACTUAL.find(x=>x.date===d.date); return a?a.max:null; });
+  const actualMin  = DATA_2024.map(d => { const a = DATA_ACTUAL.find(x=>x.date===d.date); return a?a.min:null; });
+  mainChart.data.datasets[6].data = actualMax;
+  mainChart.data.datasets[7].data = actualMin;
+  mainChart.data.datasets[8].data = actualMean;
+  mainChart.update();
+
+  // Rebuild deviation chart
+  const labels = DATA_ACTUAL.map(d=>d.date.slice(5));
+  const deltas = DATA_ACTUAL.map(d => { const p=projDict[d.date]; return p?+(d.mean-p.mean).toFixed(3):null; });
+  devChart.data.labels = labels;
+  devChart.data.datasets[0].data = deltas;
+  devChart.data.datasets[0].backgroundColor = deltas.map(v=>v>0?'rgba(230,126,34,0.7)':'rgba(26,122,74,0.7)');
+  devChart.data.datasets[0].borderColor      = deltas.map(v=>v>0?'#E67E22':'#1A7A4A');
+  devChart.update();
+
+  // Rebuild outfall chart
+  const ofLabels  = DATA_ACTUAL.map(d=>d.date.slice(5));
+  const ofData    = DATA_ACTUAL.map(d=>d.outfall_mean);
+  const outData   = DATA_ACTUAL.map(d=>d.outlet_mean);
+  outfallChart.data.labels = ofLabels;
+  outfallChart.data.datasets[0].data = ofData;
+  outfallChart.data.datasets[1].data = outData;
+  outfallChart.data.datasets[2].data = ofLabels.map(()=>40.0);
+  outfallChart.data.datasets[3].data = ofLabels.map(()=>39.8);
+  const maxOf = Math.max(...ofData.filter(Boolean));
+  document.getElementById('maxOutfall').textContent = maxOf.toFixed(2);
+  outfallChart.update();
+
+  buildTrackingTable();
+}
+
+function updateStatusStrip() {
+  const deltas = DATA_ACTUAL.map(d => { const p=projDict[d.date]; return p?+(d.mean-p.mean):null; }).filter(Boolean);
+  if (!deltas.length) return;
+  const avg = +(deltas.reduce((a,b)=>a+b)/deltas.length).toFixed(3);
+  const maxD = +Math.max(...deltas).toFixed(3);
+  const maxDay = DATA_ACTUAL[deltas.indexOf(maxD)]?.date || '—';
+  document.querySelector('.stat.above .stat-val').textContent = (avg>=0?'+':'')+avg+'°C';
+  document.querySelector('.stat.above .stat-sub').textContent = avg > 0 ? 'Actual above projection' : 'Actual below projection';
+  document.querySelectorAll('.stat.above')[1].querySelector('.stat-val').textContent = (maxD>=0?'+':'')+maxD+'°C';
+  document.querySelectorAll('.stat.above')[1].querySelector('.stat-sub').textContent = maxDay;
+  document.querySelector('.stat.info .stat-val').textContent = DATA_ACTUAL.length;
+  document.querySelector('.stat.info .stat-sub').textContent = `days loaded (${DATA_ACTUAL[0].date.slice(5)} → ${DATA_ACTUAL[DATA_ACTUAL.length-1].date.slice(5)})`;
+}
+
+// Drag & Drop
+const dz = document.getElementById('dropzone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
+
+// ═══════════════════════════════════════════════════
+// AUTO-LOAD CSV FROM GITHUB
+// ═══════════════════════════════════════════════════
+// ⚙️  เปลี่ยน URL นี้ให้ตรงกับ repo ของคุณ
+const CSV_URL = 'seawater_data.csv';   // ← relative path (อยู่ใน repo เดียวกัน)
+
+function setAutoLoadStatus(icon, msg, color='#1A7A4A') {
+  document.getElementById('autoload-icon').textContent = icon;
+  document.getElementById('autoload-msg').style.color = color;
+  document.getElementById('autoload-msg').textContent = msg;
+}
+
+async function loadCSVFromGitHub() {
+  setAutoLoadStatus('⏳', 'Fetching seawater_data.csv …');
+  try {
+    // cache-bust ทุก 5 นาที
+    const bust = Math.floor(Date.now() / 300000);
+    const resp = await fetch(`${CSV_URL}?v=${bust}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+
+    // Parse CSV
+    const lines = text.trim().split('\n');
+    const rows = [];
+    lines.slice(1).forEach(line => {
+      const parts = line.split(',');
+      if (parts.length < 2) return;
+      const dt = new Date(parts[0].trim());
+      if (isNaN(dt)) return;
+      rows.push({
+        dt,
+        inlet:   parseFloat(parts[1]) || null,
+        outlet:  parseFloat(parts[2]) || null,
+        outfall: parseFloat(parts[3]) || null,
+      });
+    });
+
+    // Aggregate to daily
+    const byDate = {};
+    rows.forEach(r => {
+      if (!r.inlet) return;
+      const key = r.dt.toISOString().slice(0,10);
+      if (!byDate[key]) byDate[key] = { inlets:[], outlets:[], outfalls:[] };
+      byDate[key].inlets.push(r.inlet);
+      if (r.outlet)  byDate[key].outlets.push(r.outlet);
+      if (r.outfall) byDate[key].outfalls.push(r.outfall);
+    });
+
+    const newActual = Object.keys(byDate).sort().map(date => {
+      const d = byDate[date];
+      const mean = v => v.length ? +(v.reduce((a,b)=>a+b)/v.length).toFixed(3) : null;
+      const max  = v => v.length ? +Math.max(...v).toFixed(3) : null;
+      const min  = v => v.length ? +Math.min(...v).toFixed(3) : null;
+      return { date, mean:mean(d.inlets), max:max(d.inlets), min:min(d.inlets),
+               outlet_mean:mean(d.outlets), outfall_mean:mean(d.outfalls) };
+    });
+
+    if (newActual.length === 0) throw new Error('No valid data in CSV');
+
+    // Replace DATA_ACTUAL
+    DATA_ACTUAL.length = 0;
+    newActual.forEach(r => DATA_ACTUAL.push(r));
+    DATA_ACTUAL.sort((a,b) => a.date.localeCompare(b.date));
+
+    refreshAllCharts();
+    updateStatusStrip();
+
+    const lastDate = DATA_ACTUAL[DATA_ACTUAL.length-1].date;
+    const loadTime = new Date().toLocaleTimeString('th-TH');
+    setAutoLoadStatus('✅',
+      `Loaded ${DATA_ACTUAL.length} days (up to ${lastDate}) · Updated ${loadTime}`);
+    document.getElementById('autoload-bar').style.background = '#F0F9F4';
+    document.getElementById('autoload-bar').style.borderColor = '#A9DFBF';
+    document.getElementById('upload-status').textContent = `✓ CSV loaded (${DATA_ACTUAL.length} days)`;
+
+  } catch(err) {
+    setAutoLoadStatus('⚠️',
+      `Could not load CSV: ${err.message} — using hardcoded data`, '#C0392B');
+    document.getElementById('autoload-bar').style.background = '#FDEBD0';
+    document.getElementById('autoload-bar').style.borderColor = '#F0A500';
+  }
+}
+
+// INIT
+buildMainChart();
+buildDeviationChart();
+buildOutfallChart();
+buildTrackingTable();
+loadCSVFromGitHub();   // ← ดึงข้อมูลล่าสุดอัตโนมัติตอนเปิดหน้า
+</script>
+</body>
+</html>
