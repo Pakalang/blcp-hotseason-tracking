@@ -141,7 +141,7 @@ body{font-family:var(--sans);background:#F4F6F8;color:var(--dark);}
     <div class="kpi green"><div class="kpi-label">FGD Mode</div><div class="kpi-val green">50%</div><div class="kpi-sub">sufficient throughout</div></div>
     <div class="kpi green"><div class="kpi-label">Load Reduction</div><div class="kpi-val green">NONE</div><div class="kpi-sub">not required (approved projection)</div></div>
     <div class="kpi blue"><div class="kpi-label">Peak Outfall (FGD 50%)</div><div class="kpi-val blue">39.41°C</div><div class="kpi-sub">margin +0.59°C vs EIA 40.0°C</div></div>
-    <div class="kpi warn"><div class="kpi-label">Coal Reserve (Plan B)</div><div class="kpi-val warn">45,000t</div><div class="kpi-sub">15 days · 6 hrs/day · no procurement</div></div>
+    <div class="kpi warn"><div class="kpi-label">Coal Reserve (Plan B)</div><div class="kpi-val warn">60,000t</div><div class="kpi-sub">15 days · 8 hrs/day · no procurement</div></div>
     <div class="kpi warn"><div class="kpi-label">Actual Burn Est. (C)</div><div class="kpi-val warn">2,500t</div><div class="kpi-sub">3 days · 5 hrs · dual-trigger only</div></div>
   </div>
 
@@ -183,11 +183,11 @@ body{font-family:var(--sans);background:#F4F6F8;color:var(--dark);}
         <table class="tbl">
           <tr><th>Item</th><th class="num">Value</th></tr>
           <tr><td>Trigger days</td><td class="num">15 days</td></tr>
-          <tr><td>Burn window (planned)</td><td class="num">6 hrs/day</td></tr>
-          <tr><td>Total burn hours</td><td class="num">90 hrs</td></tr>
+          <tr><td>Burn window (planned)</td><td class="num">8 hrs/day</td></tr>
+          <tr><td>Total burn hours</td><td class="num">120 hrs</td></tr>
           <tr><td>Total coal reserved</td><td class="num"><strong>45,000 t</strong></td></tr>
-          <tr><td>Indo (20%)</td><td class="num">9,000 t &nbsp;<span class="tag tag-ok">stock OK +11,000t</span></td></tr>
-          <tr><td>HV2604 (80%)</td><td class="num">36,000 t &nbsp;<span class="tag tag-ok">stock OK +24,000t</span></td></tr>
+          <tr><td>Indo (20%)</td><td class="num">12,000 t &nbsp;<span class="tag tag-ok">stock OK +8,000t</span></td></tr>
+          <tr><td>HV2604 (80%)</td><td class="num">48,000 t &nbsp;<span class="tag tag-ok">stock OK +12,000t</span></td></tr>
           <tr><td>Procurement needed</td><td class="num" style="color:var(--green);font-weight:700">None ✓</td></tr>
         </table>
       </div>
@@ -282,41 +282,41 @@ body{font-family:var(--sans);background:#F4F6F8;color:var(--dark);}
 <section class="section" id="tab-coal">
   <div class="kpi-strip" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi warn"><div class="kpi-label">Plan B — Days</div><div class="kpi-val warn">15</div><div class="kpi-sub">trigger days reserved</div></div>
-    <div class="kpi warn"><div class="kpi-label">Plan B — Coal</div><div class="kpi-val warn">45,000t</div><div class="kpi-sub">Indo 9,000 + HV2604 36,000</div></div>
+    <div class="kpi warn"><div class="kpi-label">Plan B — Coal</div><div class="kpi-val warn">60,000t</div><div class="kpi-sub">Indo 12,000 + HV2604 48,000</div></div>
     <div class="kpi blue"><div class="kpi-label">Scenario C — Days</div><div class="kpi-val blue">3</div><div class="kpi-sub">actual dual-trigger days</div></div>
     <div class="kpi blue"><div class="kpi-label">Scenario C — Coal</div><div class="kpi-val blue">2,500t</div><div class="kpi-sub">actual burn estimate</div></div>
   </div>
 
   <div class="ok-box">
     <span class="box-lbl">No Procurement Required</span>
-    Stock is sufficient under Plan B: Indo +11,000 t buffer · HV2604 +24,000 t buffer. No additional orders needed.
+    Stock is sufficient under Plan B: Indo +8,000 t buffer · HV2604 +12,000 t buffer. No additional orders needed.
   </div>
 
   <div class="grid-2">
     <div class="card">
-      <div class="card-title">Plan B — Trigger Day Schedule (15 days × 6 hrs)</div>
+      <div class="card-title">Plan B — Trigger Day Schedule (15 days × 8 hrs)</div>
       <table class="tbl">
         <tr><th>Date</th><th class="ctr">Low-Tide Hrs</th><th class="ctr">Reserve Window</th><th class="num">Coal/day (t)</th><th class="num">Indo (t)</th><th class="num">HV2604 (t)</th></tr>
         <tr class="sec-hdr"><td colspan="6">APRIL — 5 days</td></tr>
-        <tr><td>20 Apr</td><td class="ctr">3 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>21 Apr</td><td class="ctr">4 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>22 Apr</td><td class="ctr">4 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>23 Apr</td><td class="ctr">4 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>24 Apr</td><td class="ctr">2 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr class="sub"><td>April Sub-total</td><td class="ctr">17 hrs</td><td class="ctr">5 days</td><td class="num">15,000</td><td class="num">3,000</td><td class="num">12,000</td></tr>
+        <tr><td>20 Apr</td><td class="ctr">3 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>21 Apr</td><td class="ctr">4 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>22 Apr</td><td class="ctr">4 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>23 Apr</td><td class="ctr">4 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>24 Apr</td><td class="ctr">2 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr class="sub"><td>April Sub-total</td><td class="ctr">17 hrs</td><td class="ctr">5 days</td><td class="num">20,000</td><td class="num">4,000</td><td class="num">12,000</td></tr>
         <tr class="sec-hdr"><td colspan="6">MAY — 10 days</td></tr>
-        <tr><td>4 May</td><td class="ctr">2 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>5 May</td><td class="ctr">2 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>6 May</td><td class="ctr">2 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>7 May</td><td class="ctr">2 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>17 May</td><td class="ctr">3 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>18 May</td><td class="ctr">5 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>19 May</td><td class="ctr">5 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>20 May</td><td class="ctr">5 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>21 May</td><td class="ctr">4 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr><td>22 May</td><td class="ctr">4 hrs</td><td class="ctr">09:00–15:00</td><td class="num">3,000</td><td class="num">600</td><td class="num">2,400</td></tr>
-        <tr class="sub"><td>May Sub-total</td><td class="ctr">34 hrs</td><td class="ctr">10 days</td><td class="num">30,000</td><td class="num">6,000</td><td class="num">24,000</td></tr>
-        <tr class="grand"><td>GRAND TOTAL</td><td class="ctr">51 hrs</td><td class="ctr">15 days</td><td class="num">45,000 t</td><td class="num">9,000 t</td><td class="num">36,000 t</td></tr>
+        <tr><td>4 May</td><td class="ctr">2 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>5 May</td><td class="ctr">2 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>6 May</td><td class="ctr">2 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>7 May</td><td class="ctr">2 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>17 May</td><td class="ctr">3 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>18 May</td><td class="ctr">5 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>19 May</td><td class="ctr">5 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>20 May</td><td class="ctr">5 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>21 May</td><td class="ctr">4 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>22 May</td><td class="ctr">4 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr class="sub"><td>May Sub-total</td><td class="ctr">34 hrs</td><td class="ctr">10 days</td><td class="num">40,000</td><td class="num">8,000</td><td class="num">32,000</td></tr>
+        <tr class="grand"><td>GRAND TOTAL</td><td class="ctr">51 hrs</td><td class="ctr">15 days</td><td class="num">60,000 t</td><td class="num">12,000 t</td><td class="num">48,000 t</td></tr>
       </table>
     </div>
     <div>
@@ -324,9 +324,9 @@ body{font-family:var(--sans);background:#F4F6F8;color:var(--dark);}
         <div class="card-title">Stock Sufficiency</div>
         <table class="tbl">
           <tr><th>Coal Type</th><th class="num">Required</th><th class="num">Stock</th><th class="num">Buffer</th><th class="ctr">Status</th></tr>
-          <tr class="ok-row"><td><strong>Indo (Low-S)</strong></td><td class="num">9,000 t</td><td class="num">20,000 t</td><td class="num" style="color:var(--green);font-weight:700">+11,000 t</td><td class="ctr"><span class="tag tag-ok">OK ✓</span></td></tr>
-          <tr class="ok-row"><td><strong>HV2604</strong></td><td class="num">36,000 t</td><td class="num">60,000 t</td><td class="num" style="color:var(--green);font-weight:700">+24,000 t</td><td class="ctr"><span class="tag tag-ok">OK ✓</span></td></tr>
-          <tr class="sub"><td><strong>TOTAL</strong></td><td class="num">45,000 t</td><td class="num">80,000 t</td><td class="num" style="color:var(--green);font-weight:700">+35,000 t</td><td class="ctr"><span class="tag tag-ok">OK ✓</span></td></tr>
+          <tr class="ok-row"><td><strong>Indo (Low-S)</strong></td><td class="num">12,000 t</td><td class="num">20,000 t</td><td class="num" style="color:var(--green);font-weight:700">+8,000 t</td><td class="ctr"><span class="tag tag-ok">OK ✓</span></td></tr>
+          <tr class="ok-row"><td><strong>HV2604</strong></td><td class="num">48,000 t</td><td class="num">60,000 t</td><td class="num" style="color:var(--green);font-weight:700">+12,000 t</td><td class="ctr"><span class="tag tag-ok">OK ✓</span></td></tr>
+          <tr class="sub"><td><strong>TOTAL</strong></td><td class="num">60,000 t</td><td class="num">80,000 t</td><td class="num" style="color:var(--green);font-weight:700">+20,000 t</td><td class="ctr"><span class="tag tag-ok">OK ✓</span></td></tr>
         </table>
       </div>
       <div class="card">
@@ -342,7 +342,7 @@ body{font-family:var(--sans);background:#F4F6F8;color:var(--dark);}
         </table>
         <div class="info-box" style="margin-top:16px;margin-bottom:0;">
           <span class="box-lbl">Buffer Interpretation</span>
-          Plan B reserves 45,000 t. Scenario C uses ~2,500 t. The 42,500 t difference is the uncertainty buffer for actual 2026 tracking above projection.
+          Plan B reserves 60,000 t. Scenario C uses ~2,500 t. The 57,500 t difference is the uncertainty buffer for actual 2026 tracking above projection.
         </div>
       </div>
     </div>
