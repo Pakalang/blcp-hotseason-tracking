@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLCP Hot Season 2026 — Final Operating Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --red:#C0392B;--red-lt:#FADBD8;--red-dk:#922B21;
+  --dark:#1A1A2E;--mid:#2E4057;
+  --grey:#5D6D7E;--grey-lt:#F2F3F4;
+  --blue:#1A5276;--blue-lt:#D6EAF8;--blue-md:#2E86C1;
+  --green:#1A7A4A;--green-lt:#D5F5E3;
+  --warn:#E67E22;--warn-lt:#FDEBD0;
+  --white:#FFFFFF;--border:#D5D8DC;
+  --mono:'JetBrains Mono',monospace;
+  --sans:'DM Sans',sans-serif;
+  --display:'Bebas Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:#F4F6F8;color:var(--dark);}
+
+.hdr{background:var(--dark);border-bottom:4px solid var(--red);padding:0 40px;display:flex;align-items:stretch;justify-content:space-between;}
+.hdr-left{padding:24px 0;}
+.hdr-eye{font-family:var(--mono);font-size:10px;color:#8899AA;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;}
+.hdr-title{font-family:var(--display);font-size:38px;color:white;letter-spacing:2px;line-height:1;}
+.hdr-sub{font-family:var(--sans);font-size:12px;color:#6677AA;margin-top:6px;font-weight:300;}
+.hdr-right{display:flex;flex-direction:column;justify-content:center;gap:5px;padding:16px 0;}
+.badge{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:2px;letter-spacing:1px;}
+.badge-red{background:var(--red);color:white;}
+.badge-green{background:var(--green);color:white;}
+.badge-blue{background:#1A3A5C;color:#8899AA;}
+
+.nav-tabs{background:white;border-bottom:1px solid var(--border);padding:0 40px;display:flex;position:sticky;top:0;z-index:100;}
+.tab-btn{font-family:var(--sans);font-size:13px;font-weight:500;padding:14px 22px;border:none;background:none;color:var(--grey);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;}
+.tab-btn:hover{color:var(--dark);}
+.tab-btn.active{color:var(--red);border-bottom-color:var(--red);font-weight:600;}
+
+.main{max-width:1280px;margin:0 auto;padding:32px 40px 80px;}
+.section{display:none;}
+.section.active{display:block;}
+
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px;}
+.kpi{background:white;border:1px solid var(--border);padding:18px 18px 14px;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.green::before{background:var(--green);}
+.kpi.warn::before{background:var(--warn);}
+.kpi.red::before{background:var(--red);}
+.kpi.blue::before{background:var(--blue-md);}
+.kpi-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-bottom:8px;}
+.kpi-val{font-family:var(--display);font-size:30px;letter-spacing:1px;line-height:1;}
+.kpi-val.green{color:var(--green);}
+.kpi-val.warn{color:var(--warn);}
+.kpi-val.red{color:var(--red);}
+.kpi-val.blue{color:var(--blue-md);}
+.kpi-sub{font-size:11px;color:var(--grey);margin-top:5px;font-weight:300;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-bottom:24px;}
+.card{background:white;border:1px solid var(--border);padding:24px;}
+.card-title{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.chart-wrap{position:relative;height:280px;}
+
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+.tbl th{background:var(--dark);color:white;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:9px 10px;text-align:left;font-weight:600;}
+.tbl td{padding:8px 10px;border-bottom:1px solid #EAECEE;vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--grey-lt);}
+.tbl .sub td{background:var(--grey-lt);font-weight:600;}
+.tbl .grand td{background:var(--dark);color:white;font-weight:700;font-family:var(--mono);}
+.tbl .sec-hdr td{background:var(--mid);color:white;font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;}
+.tbl .alert-row td{background:var(--red-lt);}
+.tbl .warn-row td{background:var(--warn-lt);}
+.tbl .ok-row td{background:var(--green-lt);}
+.num{text-align:right;font-family:var(--mono);}
+.ctr{text-align:center;}
+.tag{display:inline-block;padding:2px 8px;font-family:var(--mono);font-size:9px;border-radius:2px;font-weight:700;}
+.tag-red{background:var(--red-lt);color:var(--red-dk);}
+.tag-ok{background:var(--green-lt);color:var(--green);}
+.tag-warn{background:var(--warn-lt);color:var(--warn);}
+.tag-blue{background:var(--blue-lt);color:var(--blue);}
+.tag-grey{background:var(--grey-lt);color:var(--grey);}
+
+.alert-box{padding:12px 14px 12px 18px;border-left:4px solid var(--red);background:var(--red-lt);margin-bottom:14px;font-size:12.5px;color:var(--red-dk);}
+.warn-box{padding:12px 14px 12px 18px;border-left:4px solid var(--warn);background:var(--warn-lt);margin-bottom:14px;font-size:12.5px;color:#7E5109;}
+.info-box{padding:12px 14px 12px 18px;border-left:4px solid var(--blue-md);background:var(--blue-lt);margin-bottom:14px;font-size:12.5px;color:var(--blue);}
+.ok-box{padding:12px 14px 12px 18px;border-left:4px solid var(--green);background:var(--green-lt);margin-bottom:14px;font-size:12.5px;color:var(--green);}
+.box-lbl{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:3px;}
+
+/* Protocol levels */
+.protocol-grid{display:grid;grid-template-columns:1fr;gap:0;border:1px solid var(--border);overflow:hidden;margin-bottom:24px;}
+.protocol-row{display:grid;grid-template-columns:120px 1fr 1fr 1fr;border-bottom:1px solid var(--border);}
+.protocol-row:last-child{border-bottom:none;}
+.protocol-row.hdr{background:var(--dark);}
+.protocol-cell{padding:14px 16px;font-size:13px;}
+.protocol-row.hdr .protocol-cell{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#8899AA;}
+.level-badge{display:inline-block;padding:4px 12px;border-radius:2px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1px;}
+.level-normal{background:var(--green-lt);color:var(--green);}
+.level-elevated{background:var(--warn-lt);color:var(--warn);}
+.level-escalate{background:var(--red-lt);color:var(--red-dk);}
+.level-emergency{background:var(--red);color:white;}
+
+/* Sensitivity table highlight */
+.sens-approved td{background:var(--green-lt);}
+.sens-caution td{background:var(--warn-lt);}
+.sens-risk td{background:var(--red-lt);}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-eye">BLCP Power · Map Ta Phut · Rayong</div>
+    <div class="hdr-title">HOT SEASON 2026 — FINAL PLAN</div>
+    <div class="hdr-sub">CW Temperature Management &nbsp;·&nbsp; April – May 2026 &nbsp;·&nbsp; Rev: Final March 2026</div>
+  </div>
+  <div class="hdr-right">
+    <span class="badge badge-green">FGD 50% · NO LOAD REDUCTION</span>
+    <span class="badge badge-red">PLAN B · OPERATE C</span>
+    <span class="badge badge-blue">2024 PATTERN · SHIFT −0.647°C</span>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('overview',this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('protocol',this)">Operating Protocol</button>
+  <button class="tab-btn" onclick="showTab('coal',this)">Coal Plan</button>
+  <button class="tab-btn" onclick="showTab('sensitivity',this)">Sensitivity Analysis</button>
+  <button class="tab-btn" onclick="showTab('monitor',this)">Monitoring</button>
+  <button class="tab-btn" onclick="showTab('tracking',this)">Trend Tracking</button>
+  <button class="tab-btn" onclick="showTab('outfallmon',this)">Outfall Monitor</button>
+</nav>
+
+<div class="main">
+
+<!-- ══════════════ OVERVIEW ══════════════ -->
+<section class="section active" id="tab-overview">
+  <div class="kpi-strip">
+    <div class="kpi green"><div class="kpi-label">FGD Mode</div><div class="kpi-val green">50%</div><div class="kpi-sub">sufficient throughout</div></div>
+    <div class="kpi green"><div class="kpi-label">Load Reduction</div><div class="kpi-val green">NONE</div><div class="kpi-sub">not required (approved projection)</div></div>
+    <div class="kpi blue"><div class="kpi-label">Peak Outfall (FGD 50%)</div><div class="kpi-val blue">39.41°C</div><div class="kpi-sub">margin +0.59°C vs EIA 40.0°C</div></div>
+    <div class="kpi warn"><div class="kpi-label">Coal Reserve (Plan B)</div><div class="kpi-val warn">60,000t</div><div class="kpi-sub">15 days · 8 hrs/day · no procurement</div></div>
+    <div class="kpi warn"><div class="kpi-label">Actual Burn Est. (C)</div><div class="kpi-val warn">2,500t</div><div class="kpi-sub">3 days · 5 hrs · dual-trigger only</div></div>
+  </div>
+
+  <div class="ok-box">
+    <span class="box-lbl">Key Finding from 2024 Actual Operation</span>
+    In 2024 (hottest year in history 2023–2025), BLCP operated through hot season with <strong>FGD 50% only</strong> — no full bypass, no load reduction. With 2026 projected 0.647°C cooler than 2024, <strong>FGD 50% is confirmed sufficient</strong> for 2026.
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Revised Heat Transfer Parameters</div>
+      <table class="tbl">
+        <tr><th>Parameter</th><th>Previous</th><th>Revised</th></tr>
+        <tr><td>CW Outlet rise above inlet</td><td class="num" style="color:var(--grey);text-decoration:line-through">+6.8°C</td><td class="num" style="color:var(--green);font-weight:700">+6.2°C</td></tr>
+        <tr><td>FGD 50% outfall reduction</td><td class="num">—</td><td class="num" style="color:var(--green);font-weight:700">−0.42°C</td></tr>
+        <tr><td>FGD 100% outfall reduction</td><td class="num">−0.50°C</td><td class="num" style="color:var(--green);font-weight:700">−0.53°C</td></tr>
+        <tr><td>Outfall formula (FGD 50%)</td><td class="num" style="color:var(--grey)">Inlet + 6.3°C</td><td class="num" style="font-weight:700">Inlet + 5.78°C</td></tr>
+        <tr><td>Load reduction trigger (inlet)</td><td class="num" style="color:var(--grey);text-decoration:line-through">&gt;33.2°C</td><td class="num" style="color:var(--green);font-weight:700">&gt;33.8°C</td></tr>
+        <tr><td>Load reduction required</td><td class="num" style="color:var(--red)">9 days 76 hrs</td><td class="num" style="color:var(--green);font-weight:700">None ✓</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Peak Outfall — All Scenarios</div>
+      <div class="chart-wrap" style="height:220px;">
+        <canvas id="outfallBar"></canvas>
+      </div>
+      <div class="info-box" style="margin-top:16px;margin-bottom:0;">
+        <span class="box-lbl">All scenarios safe</span>
+        Peak outfall stays below 40.0°C under all projection shifts — even pessimistic −0.250°C gives 39.811°C with FGD 50%.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Plan Summary: Plan B (Reserve) · Operate C (Real-Time)</div>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div>
+        <p style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--warn)">📋 PLAN B — Stock Reservation</p>
+        <table class="tbl">
+          <tr><th>Item</th><th class="num">Value</th></tr>
+          <tr><td>Trigger days</td><td class="num">15 days</td></tr>
+          <tr><td>Burn window (planned)</td><td class="num">8 hrs/day</td></tr>
+          <tr><td>Total burn hours</td><td class="num">120 hrs</td></tr>
+          <tr><td>Total coal reserved</td><td class="num"><strong>45,000 t</strong></td></tr>
+          <tr><td>Indo (20%)</td><td class="num">12,000 t &nbsp;<span class="tag tag-ok">stock OK +8,000t</span></td></tr>
+          <tr><td>HV2604 (80%)</td><td class="num">48,000 t &nbsp;<span class="tag tag-ok">stock OK +12,000t</span></td></tr>
+          <tr><td>Procurement needed</td><td class="num" style="color:var(--green);font-weight:700">None ✓</td></tr>
+        </table>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--blue-md)">⚡ SCENARIO C — Actual Activation (Hourly)</p>
+        <table class="tbl">
+          <tr><th>Item</th><th class="num">Value</th></tr>
+          <tr><td>Dual-trigger condition</td><td class="num">Inlet &gt;33.2°C AND Tide &lt;0.9m</td></tr>
+          <tr><td>Actual trigger days (projected)</td><td class="num">3 days (4–6 May)</td></tr>
+          <tr><td>Actual trigger hours</td><td class="num">5 hrs</td></tr>
+          <tr><td>Actual coal burn</td><td class="num"><strong>2,500 t</strong></td></tr>
+          <tr><td>Buffer vs Plan B</td><td class="num" style="color:var(--green);font-weight:700">42,500 t safety margin</td></tr>
+          <tr><td>Hours: 4 May</td><td class="num">12:00 (1 hr)</td></tr>
+          <tr><td>Hours: 5–6 May</td><td class="num">12:00–13:00 (2 hrs each)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PROTOCOL ══════════════ -->
+<section class="section" id="tab-protocol">
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-title">Four-Level Operating Response Framework</div>
+    <div class="protocol-grid">
+      <div class="protocol-row hdr">
+        <div class="protocol-cell">Level</div>
+        <div class="protocol-cell">Trigger Condition</div>
+        <div class="protocol-cell">Required Action</div>
+        <div class="protocol-cell">Notes</div>
+      </div>
+      <div class="protocol-row" style="background:var(--green-lt)">
+        <div class="protocol-cell"><span class="level-badge level-normal">NORMAL</span></div>
+        <div class="protocol-cell" style="font-size:13px;">All conditions<br><span style="font-family:var(--mono);font-size:11px;color:var(--grey)">Standard hot season</span></div>
+        <div class="protocol-cell" style="font-size:13px;font-weight:600;color:var(--green);">FGD 50%</div>
+        <div class="protocol-cell" style="font-size:12px;color:var(--grey);">No Low-S coal required. FGD 50% confirmed sufficient based on 2024 actual operation.</div>
+      </div>
+      <div class="protocol-row" style="background:var(--warn-lt)">
+        <div class="protocol-cell"><span class="level-badge level-elevated">ELEVATED</span></div>
+        <div class="protocol-cell" style="font-size:13px;"><strong>Inlet &gt; 33.2°C</strong><br><strong>AND Tide &lt; 0.9m</strong><br><span style="font-family:var(--mono);font-size:10px;color:var(--grey)">Hourly real-time check</span></div>
+        <div class="protocol-cell" style="font-size:13px;font-weight:600;color:var(--warn);">FGD 50% + Low-S coal<br><span style="font-size:11px;font-weight:400">(activate that hour only)</span></div>
+        <div class="protocol-cell" style="font-size:12px;color:var(--grey);">Both conditions must occur simultaneously. Burn Low-S only during qualifying hours. Projected: 4–6 May only.</div>
+      </div>
+      <div class="protocol-row" style="background:var(--red-lt)">
+        <div class="protocol-cell"><span class="level-badge level-escalate">ESCALATE</span></div>
+        <div class="protocol-cell" style="font-size:13px;"><strong>Outfall approaching 39.8°C</strong><br><span style="font-family:var(--mono);font-size:10px;color:var(--grey)">Alarm threshold</span></div>
+        <div class="protocol-cell" style="font-size:13px;font-weight:600;color:var(--red-dk);">FGD 50% → 100%<br><span style="font-size:11px;font-weight:400">+0.11°C additional reduction</span></div>
+        <div class="protocol-cell" style="font-size:12px;color:var(--grey);">Switch from 50% to full FGD. Gains additional 0.11°C outfall reduction (0.53 − 0.42°C).</div>
+      </div>
+      <div class="protocol-row" style="background:#F8D7DA">
+        <div class="protocol-cell"><span class="level-badge level-emergency">EMERGENCY</span></div>
+        <div class="protocol-cell" style="font-size:13px;"><strong>Outlet ≥ 40.0°C</strong><br><strong>(Inlet &gt; 33.8°C)</strong></div>
+        <div class="protocol-cell" style="font-size:13px;font-weight:600;color:var(--red);">Load Reduction<br><span style="font-family:var(--mono);font-size:11px;">MW▼ = (Inlet − 33.8) × 150</span></div>
+        <div class="protocol-cell" style="font-size:12px;color:var(--grey);">Not expected under approved projection. Reassess if March 2026 actual mean &gt; 31.1°C (shift &lt; −0.40°C).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Key Thresholds Reference</div>
+      <table class="tbl">
+        <tr><th>Threshold</th><th class="num">Value</th><th>Basis</th></tr>
+        <tr><td>EIA outfall limit (legal)</td><td class="num" style="color:var(--red);font-weight:700">40.0°C</td><td>Thai Ministry of Industry</td></tr>
+        <tr><td>Outfall alarm</td><td class="num">39.8°C</td><td>BLCP-P-SHE-04-014-L</td></tr>
+        <tr><td>FGD escalation (outfall)</td><td class="num">~39.8°C</td><td>Operations discretion</td></tr>
+        <tr><td>Low-S coal trigger (inlet)</td><td class="num" style="color:var(--warn);font-weight:700">33.2°C</td><td>Elevated level trigger</td></tr>
+        <tr><td>Load reduction trigger (inlet)</td><td class="num" style="color:var(--red);font-weight:700">33.8°C</td><td>Outlet = 40.0°C (revised)</td></tr>
+        <tr><td>Low-S coal trigger (tide)</td><td class="num">&lt; 0.9 m</td><td>Sattahip tide data</td></tr>
+        <tr><td>Peak projected inlet</td><td class="num">33.634°C</td><td>2024 pattern −0.647°C</td></tr>
+        <tr><td>Peak projected outfall (FGD 50%)</td><td class="num" style="color:var(--blue-md);font-weight:700">39.414°C</td><td>Margin +0.586°C</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Load Reduction — Status by Scenario</div>
+      <table class="tbl">
+        <tr><th>Projection Shift</th><th class="num">Peak Outlet</th><th class="ctr">Load Red?</th></tr>
+        <tr class="ok-row"><td><strong>−0.647°C (approved)</strong></td><td class="num">39.834°C</td><td class="ctr"><span class="tag tag-ok">NONE ✓</span></td></tr>
+        <tr class="ok-row"><td>−0.500°C</td><td class="num">39.981°C</td><td class="ctr"><span class="tag tag-ok">NONE ✓</span></td></tr>
+        <tr class="warn-row"><td>−0.400°C</td><td class="num">40.081°C</td><td class="ctr"><span class="tag tag-warn">MONITOR ⚠</span></td></tr>
+        <tr class="alert-row"><td><strong>−0.250°C (pessimistic)</strong></td><td class="num">40.231°C</td><td class="ctr"><span class="tag tag-red">REQUIRED ⚠</span></td></tr>
+      </table>
+      <div class="warn-box" style="margin-top:16px;margin-bottom:0;">
+        <span class="box-lbl">Re-evaluation Trigger</span>
+        If March 2026 actual mean inlet &gt; 31.1°C → revised shift &lt; −0.40°C → reassess load reduction plan immediately.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ COAL ══════════════ -->
+<section class="section" id="tab-coal">
+  <div class="kpi-strip" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi warn"><div class="kpi-label">Plan B — Days</div><div class="kpi-val warn">15</div><div class="kpi-sub">trigger days reserved</div></div>
+    <div class="kpi warn"><div class="kpi-label">Plan B — Coal</div><div class="kpi-val warn">60,000t</div><div class="kpi-sub">Indo 12,000 + HV2604 48,000</div></div>
+    <div class="kpi blue"><div class="kpi-label">Scenario C — Days</div><div class="kpi-val blue">3</div><div class="kpi-sub">actual dual-trigger days</div></div>
+    <div class="kpi blue"><div class="kpi-label">Scenario C — Coal</div><div class="kpi-val blue">2,500t</div><div class="kpi-sub">actual burn estimate</div></div>
+  </div>
+
+  <div class="ok-box">
+    <span class="box-lbl">No Procurement Required</span>
+    Stock is sufficient under Plan B: Indo +8,000 t buffer · HV2604 +12,000 t buffer. No additional orders needed.
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Plan B — Trigger Day Schedule (15 days × 8 hrs)</div>
+      <table class="tbl">
+        <tr><th>Date</th><th class="ctr">Low-Tide Hrs</th><th class="ctr">Reserve Window</th><th class="num">Coal/day (t)</th><th class="num">Indo (t)</th><th class="num">HV2604 (t)</th></tr>
+        <tr class="sec-hdr"><td colspan="6">APRIL — 5 days</td></tr>
+        <tr><td>20 Apr</td><td class="ctr">3 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>21 Apr</td><td class="ctr">4 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>22 Apr</td><td class="ctr">4 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>23 Apr</td><td class="ctr">4 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>24 Apr</td><td class="ctr">2 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr class="sub"><td>April Sub-total</td><td class="ctr">17 hrs</td><td class="ctr">5 days</td><td class="num">20,000</td><td class="num">4,000</td><td class="num">12,000</td></tr>
+        <tr class="sec-hdr"><td colspan="6">MAY — 10 days</td></tr>
+        <tr><td>4 May</td><td class="ctr">2 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>5 May</td><td class="ctr">2 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>6 May</td><td class="ctr">2 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>7 May</td><td class="ctr">2 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>17 May</td><td class="ctr">3 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>18 May</td><td class="ctr">5 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>19 May</td><td class="ctr">5 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>20 May</td><td class="ctr">5 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>21 May</td><td class="ctr">4 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr><td>22 May</td><td class="ctr">4 hrs</td><td class="ctr">13:00–20:00</td><td class="num">4,000</td><td class="num">800</td><td class="num">2,400</td></tr>
+        <tr class="sub"><td>May Sub-total</td><td class="ctr">34 hrs</td><td class="ctr">10 days</td><td class="num">40,000</td><td class="num">8,000</td><td class="num">32,000</td></tr>
+        <tr class="grand"><td>GRAND TOTAL</td><td class="ctr">51 hrs</td><td class="ctr">15 days</td><td class="num">60,000 t</td><td class="num">12,000 t</td><td class="num">48,000 t</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-title">Stock Sufficiency</div>
+        <table class="tbl">
+          <tr><th>Coal Type</th><th class="num">Required</th><th class="num">Stock</th><th class="num">Buffer</th><th class="ctr">Status</th></tr>
+          <tr class="ok-row"><td><strong>Indo (Low-S)</strong></td><td class="num">12,000 t</td><td class="num">20,000 t</td><td class="num" style="color:var(--green);font-weight:700">+8,000 t</td><td class="ctr"><span class="tag tag-ok">OK ✓</span></td></tr>
+          <tr class="ok-row"><td><strong>HV2604</strong></td><td class="num">48,000 t</td><td class="num">60,000 t</td><td class="num" style="color:var(--green);font-weight:700">+12,000 t</td><td class="ctr"><span class="tag tag-ok">OK ✓</span></td></tr>
+          <tr class="sub"><td><strong>TOTAL</strong></td><td class="num">60,000 t</td><td class="num">80,000 t</td><td class="num" style="color:var(--green);font-weight:700">+20,000 t</td><td class="ctr"><span class="tag tag-ok">OK ✓</span></td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">Scenario C — Actual Dual-Trigger Hours</div>
+        <table class="tbl">
+          <tr><th>Date</th><th class="ctr">Hour</th><th class="num">Proj Inlet</th><th class="num">Tide (m)</th><th class="num">Coal (t)</th></tr>
+          <tr><td>4 May</td><td class="ctr">12:00</td><td class="num">33.26°C</td><td class="num">0.8m</td><td class="num">500</td></tr>
+          <tr><td>5 May</td><td class="ctr">12:00</td><td class="num">33.22°C</td><td class="num">0.8m</td><td class="num">500</td></tr>
+          <tr><td>5 May</td><td class="ctr">13:00</td><td class="num">33.29°C</td><td class="num">0.8m</td><td class="num">500</td></tr>
+          <tr><td>6 May</td><td class="ctr">12:00</td><td class="num">33.22°C</td><td class="num">0.8m</td><td class="num">500</td></tr>
+          <tr><td>6 May</td><td class="ctr">13:00</td><td class="num">33.28°C</td><td class="num">0.8m</td><td class="num">500</td></tr>
+          <tr class="grand"><td>TOTAL</td><td class="ctr">5 hrs</td><td class="num">—</td><td class="num">—</td><td class="num">2,500 t</td></tr>
+        </table>
+        <div class="info-box" style="margin-top:16px;margin-bottom:0;">
+          <span class="box-lbl">Buffer Interpretation</span>
+          Plan B reserves 60,000 t. Scenario C uses ~2,500 t. The 57,500 t difference is the uncertainty buffer for actual 2026 tracking above projection.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ SENSITIVITY ══════════════ -->
+<section class="section" id="tab-sensitivity">
+  <div class="warn-box">
+    <span class="box-lbl">Context</span>
+    Actual March 2026 data (1–12 Mar) tracks <strong>+0.25°C above projection</strong> on average. The approved shift (−0.647°C) may narrow as actual data accumulates. This analysis shows outcomes across possible shift values.
+  </div>
+
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-title">Sensitivity Table — Projection Shift vs Key Outcomes</div>
+    <table class="tbl">
+      <tr><th>Shift Scenario</th><th class="num">Peak Inlet</th><th class="num">Peak Outlet</th><th class="num">Peak Outfall (FGD 50%)</th><th class="num">Margin</th><th class="ctr">Load Red?</th><th class="ctr">Outfall Breach?</th></tr>
+      <tr class="sens-approved"><td><strong>−0.647°C (approved)</strong></td><td class="num">33.634°C</td><td class="num">39.834°C</td><td class="num">39.414°C</td><td class="num" style="color:var(--green);font-weight:700">+0.586°C</td><td class="ctr"><span class="tag tag-ok">NONE ✓</span></td><td class="ctr"><span class="tag tag-ok">NONE ✓</span></td></tr>
+      <tr><td>−0.500°C</td><td class="num">33.781°C</td><td class="num">39.981°C</td><td class="num">39.561°C</td><td class="num">+0.439°C</td><td class="ctr"><span class="tag tag-ok">NONE ✓</span></td><td class="ctr"><span class="tag tag-ok">NONE ✓</span></td></tr>
+      <tr class="sens-caution"><td>−0.400°C</td><td class="num">33.881°C</td><td class="num" style="color:var(--warn);font-weight:700">40.081°C ⚠</td><td class="num">39.661°C</td><td class="num" style="color:var(--warn)">+0.339°C</td><td class="ctr"><span class="tag tag-warn">MONITOR ⚠</span></td><td class="ctr"><span class="tag tag-ok">NONE ✓</span></td></tr>
+      <tr class="sens-risk"><td><strong>−0.250°C (pessimistic)</strong></td><td class="num" style="color:var(--red);font-weight:700">34.031°C</td><td class="num" style="color:var(--red);font-weight:700">40.231°C ⚠</td><td class="num">39.811°C</td><td class="num" style="color:var(--red);font-weight:700">+0.189°C</td><td class="ctr"><span class="tag tag-red">YES ⚠</span></td><td class="ctr"><span class="tag tag-ok">NONE ✓</span></td></tr>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Peak Outfall vs EIA Limit by Shift</div>
+      <div class="chart-wrap"><canvas id="sensitivityChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Low-S Coal Trigger Hours by Shift (Scenario C)</div>
+      <div class="chart-wrap"><canvas id="coalSensChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Re-evaluation Decision Tree</div>
+    <table class="tbl">
+      <tr><th>Condition</th><th>If True</th><th>Action</th></tr>
+      <tr class="ok-row"><td>March 2026 mean inlet ≤ 30.858°C</td><td>Shift ≥ −0.647°C (better than approved)</td><td>Continue current plan, no change</td></tr>
+      <tr><td>March 2026 mean inlet 30.86–31.1°C</td><td>Shift −0.40 to −0.65°C</td><td>Monitor closely, Plan B still valid</td></tr>
+      <tr class="warn-row"><td>March 2026 mean inlet &gt; 31.1°C</td><td>Shift &lt; −0.40°C → outlet may reach 40°C</td><td><strong>Reassess load reduction plan immediately</strong></td></tr>
+      <tr class="alert-row"><td>March 2026 mean inlet &gt; 31.3°C</td><td>Shift ~−0.25°C → pessimistic scenario</td><td><strong>Reinstate load reduction protocol</strong></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════ MONITORING ══════════════ -->
+<section class="section" id="tab-monitor">
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-title">Monitoring & Escalation Action Register</div>
+    <table class="tbl">
+      <tr><th style="width:40px">#</th><th style="width:200px">Action</th><th>Detail</th><th style="width:160px">Trigger / Deadline</th><th style="width:150px">Owner</th></tr>
+      <tr style="border-left:4px solid var(--blue-md)">
+        <td><strong>1</strong></td>
+        <td><strong>Daily CW inlet monitoring</strong></td>
+        <td>Compare actual hourly inlet vs 2024 pattern projection. Flag if actual consistently tracks above projection.</td>
+        <td style="font-family:var(--mono);font-size:11px">Daily · Apr–May</td>
+        <td style="font-size:12px">Operations</td>
+      </tr>
+      <tr style="border-left:4px solid var(--warn)">
+        <td><strong>2</strong></td>
+        <td><strong>Update projection shift</strong></td>
+        <td>Recalculate shift using full March 2026 monthly mean. Update all projections and re-evaluate plan.</td>
+        <td style="font-family:var(--mono);font-size:11px;color:var(--warn)">31 March 2026</td>
+        <td style="font-size:12px">Ops + Envi</td>
+      </tr>
+      <tr style="border-left:4px solid var(--warn)">
+        <td><strong>3</strong></td>
+        <td><strong>Reassess load reduction</strong></td>
+        <td>If revised shift &lt; −0.40°C (March mean &gt; 31.1°C), reassess whether load reduction protocol needs reinstatement.</td>
+        <td style="font-family:var(--mono);font-size:11px;color:var(--warn)">After step 2</td>
+        <td style="font-size:12px">Ops + CD + Envi</td>
+      </tr>
+      <tr style="border-left:4px solid var(--red)">
+        <td><strong>4</strong></td>
+        <td><strong>Activate Low-S coal (Scenario C)</strong></td>
+        <td>When hourly inlet &gt; 33.2°C AND tide &lt; 0.9m simultaneously. Burn for that hour. Stop when conditions no longer met.</td>
+        <td style="font-family:var(--mono);font-size:11px;color:var(--red)">Hourly real-time</td>
+        <td style="font-size:12px">Ops + CD + Envi</td>
+      </tr>
+      <tr style="border-left:4px solid var(--red)">
+        <td><strong>5</strong></td>
+        <td><strong>Escalate FGD 50% → 100%</strong></td>
+        <td>When outfall temperature approaches 39.8°C alarm threshold. Additional 0.11°C reduction achieved.</td>
+        <td style="font-family:var(--mono);font-size:11px;color:var(--red)">Outfall → 39.8°C</td>
+        <td style="font-size:12px">Ops + CD + Envi</td>
+      </tr>
+      <tr style="border-left:4px solid var(--red)">
+        <td><strong>6</strong></td>
+        <td><strong>Emergency load reduction</strong></td>
+        <td>MW▼ = (Inlet − 33.8) × 150. Only if outlet reaches 40.0°C. Not expected under approved projection.</td>
+        <td style="font-family:var(--mono);font-size:11px;color:var(--red)">Outlet ≥ 40.0°C</td>
+        <td style="font-size:12px">Ops + CD + Envi</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Key Dates</div>
+      <table class="tbl">
+        <tr><th>Date</th><th>Event</th><th class="ctr">Type</th></tr>
+        <tr><td style="font-family:var(--mono)">31 Mar</td><td>Update projection shift (full March data)</td><td class="ctr"><span class="tag tag-warn">ACTION</span></td></tr>
+        <tr><td style="font-family:var(--mono)">20–24 Apr</td><td>Plan B reserve window active (April cluster)</td><td class="ctr"><span class="tag tag-blue">COAL</span></td></tr>
+        <tr><td style="font-family:var(--mono)">4–7 May</td><td>Plan B reserve window active (May cluster 1)</td><td class="ctr"><span class="tag tag-blue">COAL</span></td></tr>
+        <tr style="background:var(--warn-lt)"><td style="font-family:var(--mono)"><strong>4–6 May</strong></td><td><strong>Scenario C: dual-trigger expected</strong></td><td class="ctr"><span class="tag tag-warn">ACTIVATE</span></td></tr>
+        <tr><td style="font-family:var(--mono)">17–22 May</td><td>Plan B reserve window active (May cluster 2)</td><td class="ctr"><span class="tag tag-blue">COAL</span></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Reference Parameters</div>
+      <table class="tbl">
+        <tr><th>Parameter</th><th class="num">Value</th></tr>
+        <tr><td>EIA outfall limit</td><td class="num" style="color:var(--red);font-weight:700">≤ 40.0°C</td></tr>
+        <tr><td>CW rise (Outlet − Inlet)</td><td class="num">+6.2°C</td></tr>
+        <tr><td>FGD 50% reduction</td><td class="num">−0.42°C</td></tr>
+        <tr><td>FGD 100% reduction</td><td class="num">−0.53°C</td></tr>
+        <tr><td>Projection shift (approved)</td><td class="num">−0.647°C</td></tr>
+        <tr><td>Low-S trigger (inlet)</td><td class="num">33.2°C</td></tr>
+        <tr><td>Low-S trigger (tide)</td><td class="num">&lt; 0.9 m</td></tr>
+        <tr><td>Load reduction formula</td><td class="num" style="font-family:var(--mono);font-size:11px">(Inlet − 33.8) × 150</td></tr>
+        <tr><td>Coal rate (2 units)</td><td class="num">500 t/hr</td></tr>
+        <tr><td>Blend ratio</td><td class="num">20% Indo : 80% HV2604</td></tr>
+        <tr><td>Procedure ref.</td><td class="num" style="font-family:var(--mono);font-size:11px">BLCP-P-SHE-04-014-L Rev L</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div><!-- /main -->
+
+<!-- ══ TREND TRACKING SECTION ══ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+.upload-zone{border:2px dashed var(--border);border-radius:3px;padding:22px;text-align:center;cursor:pointer;background:#FAFBFC;position:relative;transition:all .2s;margin-bottom:0;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--blue-md);background:var(--blue-lt);}
+.upload-zone.loaded{border-color:var(--green);background:var(--green-lt);border-style:solid;}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.al-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:3px;margin-bottom:14px;border:1px solid #A9DFBF;background:#F0F9F4;}
+.al-bar.warn{background:var(--warn-lt);border-color:#F0A500;}
+.al-bar.err{background:var(--red-lt);border-color:var(--red);}
+.al-msg{font-size:11px;color:var(--green);}
+.al-bar.warn .al-msg{color:var(--warn);}
+.al-bar.err  .al-msg{color:var(--red);}
+.al-btn2{font-family:var(--mono);font-size:9px;padding:4px 10px;border:1px solid var(--blue-md);background:white;color:var(--blue-md);cursor:pointer;border-radius:2px;margin-left:auto;}
+.kpi4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.leg2{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;}
+.leg2-item{display:flex;align-items:center;gap:6px;font-size:11px;}
+.leg2-line{width:24px;height:3px;border-radius:2px;}
+.tbl-scroll{max-height:260px;overflow-y:auto;}
+.tbl-scroll .tbl thead{position:sticky;top:0;z-index:2;}
+.above{color:var(--warn);font-weight:600;}
+.below{color:var(--green);font-weight:600;}
+</style>
+
+<div class="main" id="extra-sections" style="max-width:1280px;margin:0 auto;padding:0 40px 80px;">
+
+<!-- TREND TRACKING -->
+<section class="section" id="tab-tracking">
+  <div class="al-bar" id="alBar2">
+    <span id="alIcon2" style="font-size:18px;">⏳</span>
+    <div>
+      <div style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1px;">AUTO-LOAD</div>
+      <div class="al-msg" id="alMsg2">กำลัง fetch seawater_data.csv …</div>
+    </div>
+    <button class="al-btn2" onclick="loadCSV2()">↻ RELOAD</button>
+  </div>
+
+  <div class="kpi4">
+    <div class="kpi warn"><div class="kpi-label">Avg Delta (actual−proj)</div><div class="kpi-val warn" id="tt_avgDelta">—</div><div class="kpi-sub">March 2026</div></div>
+    <div class="kpi warn"><div class="kpi-label">Max Single-Day Delta</div><div class="kpi-val warn" id="tt_maxDelta">—</div><div class="kpi-sub" id="tt_maxDeltaDate">—</div></div>
+    <div class="kpi blue"><div class="kpi-label">Days Loaded</div><div class="kpi-val blue" id="tt_days">—</div><div class="kpi-sub" id="tt_daysRange">—</div></div>
+    <div class="kpi red"><div class="kpi-label">Trend Assessment</div><div class="kpi-val red" id="tt_trend">—</div><div class="kpi-sub" id="tt_trendSub">—</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">
+      <span>CW Inlet Daily Mean — Mar–May 2026 (Actual vs Projection)</span>
+      <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;">
+        <button onclick="ttToggle('t2024',this)" data-active="1" style="font-family:var(--mono);font-size:9px;padding:5px 12px;border:none;border-right:1px solid var(--border);background:white;color:#B0B8C0;cursor:pointer;letter-spacing:1px;font-weight:700;transition:all .15s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=this.dataset.active=='1'?'#f5f5f5':'white'">2024 PATTERN</button>
+        <button onclick="ttToggle('tproj',this)" data-active="1" style="font-family:var(--mono);font-size:9px;padding:5px 12px;border:none;border-right:1px solid var(--border);background:white;color:#2E86C1;cursor:pointer;letter-spacing:1px;font-weight:700;transition:all .15s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=this.dataset.active=='1'?'#f5f5f5':'white'">PROJECTION</button>
+        <button onclick="ttToggle('tactual',this)" data-active="1" style="font-family:var(--mono);font-size:9px;padding:5px 12px;border:none;background:white;color:#C0392B;cursor:pointer;letter-spacing:1px;font-weight:700;transition:all .15s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=this.dataset.active=='1'?'#f5f5f5':'white'">ACTUAL</button>
+      </div>
+    </div>
+    <div class="leg2">
+      <div class="leg2-item"><div class="leg2-line" style="border-top:2px dashed #B0B8C0;background:none;height:0;"></div><span style="color:var(--grey)">2024 Pattern</span></div>
+      <div class="leg2-item"><div class="leg2-line" style="background:var(--blue-md);"></div><span style="color:var(--blue-md)">2026 Projection (−0.647°C)</span></div>
+      <div class="leg2-item"><div class="leg2-line" style="background:var(--red);"></div><span style="color:var(--red)">2026 Actual</span></div>
+      <div class="leg2-item"><div class="leg2-line" style="border-top:2px dashed var(--warn);background:none;height:0;width:24px;"></div><span>Load Red. Trigger 33.8°C</span></div>
+    </div>
+    <div style="position:relative;height:320px;"><canvas id="ttMainChart"></canvas></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Daily Deviation: Actual − Projection</div>
+      <div style="position:relative;height:200px;"><canvas id="ttDevChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>Tracking Table</span> <span style="font-family:var(--mono);font-size:9px;color:var(--grey)" id="tt_count">—</span></div>
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead><tr><th>Date</th><th class="num">Actual Mean</th><th class="num">Proj. Mean</th><th class="num">Delta</th><th>Status</th></tr></thead>
+          <tbody id="ttTrackBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">📂 Upload Actual Data (Excel / CSV)</div>
+    <div class="upload-zone" id="ttDropzone">
+      <input type="file" accept=".csv,.xlsx,.xls" onchange="ttHandleFile(this.files[0])">
+      <div style="font-size:22px;margin-bottom:8px;">📊</div>
+      <div style="font-size:12px;color:var(--grey)"><strong style="color:var(--blue-md)">Click</strong> or drag & drop<br>
+      <span style="font-family:var(--mono);font-size:9px;">Columns: datetime | inlet | [outlet] | [outfall] · Hourly rows</span></div>
+    </div>
+    <div id="ttUploadInfo" style="display:none;margin-top:10px;">
+      <div class="ok-box" style="margin-bottom:0;"><span class="box-lbl">Loaded</span><span id="ttUploadDetail"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- OUTFALL MONITOR -->
+<section class="section" id="tab-outfallmon">
+  <div class="warn-box">
+    <span class="box-lbl">⚠ Actual March 2026 Tracking Above Projection (+0.25°C avg)</span>
+    If bias persists into Apr–May, outfall margin narrows from +0.586°C → ~+0.34°C. Still safe under FGD 50%. Monitor daily.
+  </div>
+
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="card-title">Projected Outfall Max (FGD 50%) vs EIA Limit · Mar–May</div>
+      <div class="leg2" style="margin-bottom:10px;">
+        <div class="leg2-item"><div class="leg2-line" style="background:var(--warn);"></div><span>Proj. Outfall Max (FGD 50%)</span></div>
+        <div class="leg2-item"><div class="leg2-line" style="background:var(--blue-md);opacity:0.5;"></div><span>Proj. Outfall Mean</span></div>
+        <div class="leg2-item"><div class="leg2-line" style="border-top:2px dashed var(--red);background:none;height:0;width:24px;"></div><span>EIA 40.0°C</span></div>
+      </div>
+      <div style="position:relative;height:280px;"><canvas id="omProjChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Actual Outfall &amp; Outlet · March 2026 (from uploaded data)</div>
+      <div style="position:relative;height:280px;"><canvas id="omActualChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Outfall Peak Calendar — Projected (FGD 50%) · Apr–May 2026</div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th class="num">Proj. Inlet Max</th>
+          <th class="num">Proj. Outlet Max</th>
+          <th class="num">Proj. Outfall Max (FGD 50%)</th>
+          <th class="num">Margin vs 40.0°C</th>
+          <th>Risk</th>
+        </tr>
+      </thead>
+      <tbody id="omTableBody"></tbody>
+    </table>
+  </div>
+</section>
+
+</div><!-- /extra-sections -->
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Outfall bar chart (overview)
+new Chart(document.getElementById('outfallBar').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['−0.647°C\n(approved)', '−0.500°C', '−0.400°C', '−0.250°C\n(pessimistic)'],
+    datasets: [{
+      label: 'Peak Outfall (FGD 50%)',
+      data: [39.414, 39.561, 39.661, 39.811],
+      backgroundColor: ['rgba(26,122,74,0.7)', 'rgba(46,134,193,0.6)', 'rgba(230,126,34,0.7)', 'rgba(192,57,43,0.7)'],
+      borderColor:     ['#1A7A4A', '#2E86C1', '#E67E22', '#C0392B'],
+      borderWidth: 1.5, borderRadius: 2,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => `Outfall: ${c.parsed.y.toFixed(3)}°C` } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { family: 'JetBrains Mono', size: 9 } } },
+      y: { min: 39.0, max: 40.2,
+        grid: { color: '#F0F0F0' },
+        ticks: { font: { family: 'JetBrains Mono', size: 10 } },
+        title: { display: true, text: 'Peak Outfall (°C)', font: { family: 'DM Sans', size: 11 } }
+      }
+    },
+    annotation: {}
+  },
+  plugins: [{
+    id: 'limitLine',
+    afterDraw(chart) {
+      const { ctx, scales: { y } } = chart;
+      const yPos = y.getPixelForValue(40.0);
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(chart.chartArea.left, yPos);
+      ctx.lineTo(chart.chartArea.right, yPos);
+      ctx.strokeStyle = '#C0392B';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 4]);
+      ctx.stroke();
+      ctx.fillStyle = '#C0392B';
+      ctx.font = '10px JetBrains Mono';
+      ctx.fillText('EIA Limit 40.0°C', chart.chartArea.left + 4, yPos - 5);
+      ctx.restore();
+    }
+  }]
+});
+
+// Sensitivity chart
+new Chart(document.getElementById('sensitivityChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['−0.647°C', '−0.500°C', '−0.400°C', '−0.250°C'],
+    datasets: [
+      { label: 'Peak Outfall (FGD 50%)', data: [39.414, 39.561, 39.661, 39.811],
+        backgroundColor: ['rgba(26,122,74,0.7)','rgba(46,134,193,0.6)','rgba(230,126,34,0.7)','rgba(192,57,43,0.7)'],
+        borderRadius: 2 },
+      { label: 'Peak Outlet (no FGD effect)', data: [39.834, 39.981, 40.081, 40.231],
+        backgroundColor: 'transparent',
+        borderColor: ['#1A7A4A','#2E86C1','#E67E22','#C0392B'],
+        borderWidth: 2, type: 'line', tension: 0.3, pointRadius: 5 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { font: { family: 'DM Sans', size: 10 }, boxWidth: 12 } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { family: 'JetBrains Mono', size: 9 } } },
+      y: { min: 38.8, max: 40.5,
+        grid: { color: '#F0F0F0' },
+        ticks: { font: { family: 'JetBrains Mono', size: 10 } }
+      }
+    }
+  },
+  plugins: [{
+    id: 'limit',
+    afterDraw(chart) {
+      const { ctx, scales: { y } } = chart;
+      const yPos = y.getPixelForValue(40.0);
+      ctx.save(); ctx.beginPath();
+      ctx.moveTo(chart.chartArea.left, yPos); ctx.lineTo(chart.chartArea.right, yPos);
+      ctx.strokeStyle = '#C0392B'; ctx.lineWidth = 1.5; ctx.setLineDash([4,3]); ctx.stroke();
+      ctx.fillStyle = '#C0392B'; ctx.font = '9px JetBrains Mono';
+      ctx.fillText('EIA 40.0°C', chart.chartArea.left + 2, yPos - 4);
+      ctx.restore();
+    }
+  }]
+});
+
+// Coal sensitivity chart
+new Chart(document.getElementById('coalSensChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['−0.647°C', '−0.500°C', '−0.400°C', '−0.250°C'],
+    datasets: [
+      { label: 'Trigger Hours (Scenario C)', data: [5, 6, 8, 13],
+        backgroundColor: ['rgba(26,122,74,0.7)','rgba(46,134,193,0.6)','rgba(230,126,34,0.7)','rgba(192,57,43,0.7)'],
+        borderRadius: 2, yAxisID: 'y' },
+      { label: 'Coal Burn (t)', data: [2500, 3000, 4000, 6500],
+        backgroundColor: 'transparent',
+        borderColor: '#2E86C1', borderWidth: 2, type: 'line', tension: 0.3, pointRadius: 5, yAxisID: 'y2' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { font: { family: 'DM Sans', size: 10 }, boxWidth: 12 } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { family: 'JetBrains Mono', size: 9 } } },
+      y: { title: { display: true, text: 'Trigger Hours', font: { family: 'DM Sans', size: 10 } }, grid: { color: '#F0F0F0' }, ticks: { font: { family: 'JetBrains Mono', size: 10 } } },
+      y2: { position: 'right', title: { display: true, text: 'Coal (t)', font: { family: 'DM Sans', size: 10 } }, grid: { display: false }, ticks: { font: { family: 'JetBrains Mono', size: 10 } } }
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════
+// TREND TRACKING + OUTFALL MONITOR
+// ═══════════════════════════════════════════════
+
+// Projection data (same as index.html)
+const TT_2024 = [{"date":"2026-03-01","mean":31.093,"max":31.391,"min":30.872},{"date":"2026-03-02","mean":31.16,"max":31.437,"min":30.897},{"date":"2026-03-03","mean":31.261,"max":31.53,"min":31.023},{"date":"2026-03-04","mean":31.24,"max":31.567,"min":30.985},{"date":"2026-03-05","mean":31.387,"max":31.741,"min":31.127},{"date":"2026-03-06","mean":31.466,"max":31.724,"min":31.261},{"date":"2026-03-07","mean":31.562,"max":32.007,"min":31.328},{"date":"2026-03-08","mean":31.653,"max":31.812,"min":31.499},{"date":"2026-03-09","mean":31.63,"max":31.729,"min":31.555},{"date":"2026-03-10","mean":31.564,"max":31.739,"min":31.451},{"date":"2026-03-11","mean":31.566,"max":31.725,"min":31.395},{"date":"2026-03-12","mean":31.45,"max":31.584,"min":31.33},{"date":"2026-03-13","mean":31.317,"max":31.46,"min":31.233},{"date":"2026-03-14","mean":31.36,"max":31.563,"min":31.169},{"date":"2026-03-15","mean":31.424,"max":31.654,"min":31.213},{"date":"2026-03-16","mean":31.373,"max":31.555,"min":31.241},{"date":"2026-03-17","mean":31.31,"max":31.62,"min":31.161},{"date":"2026-03-18","mean":31.448,"max":31.767,"min":31.214},{"date":"2026-03-19","mean":31.658,"max":32.01,"min":31.412},{"date":"2026-03-20","mean":31.457,"max":31.613,"min":31.305},{"date":"2026-03-21","mean":31.29,"max":31.481,"min":31.174},{"date":"2026-03-22","mean":31.252,"max":31.41,"min":31.188},{"date":"2026-03-23","mean":31.296,"max":31.42,"min":31.225},{"date":"2026-03-24","mean":31.344,"max":31.608,"min":31.137},{"date":"2026-03-25","mean":31.389,"max":31.586,"min":31.246},{"date":"2026-03-26","mean":31.513,"max":31.72,"min":31.313},{"date":"2026-03-27","mean":31.731,"max":32.109,"min":31.484},{"date":"2026-03-28","mean":31.792,"max":32.007,"min":31.622},{"date":"2026-03-29","mean":31.973,"max":32.287,"min":31.694},{"date":"2026-03-30","mean":32.245,"max":32.489,"min":32.009},{"date":"2026-03-31","mean":32.458,"max":32.637,"min":32.275},{"date":"2026-04-01","mean":32.485,"max":32.739,"min":32.219},{"date":"2026-04-02","mean":32.619,"max":32.817,"min":32.397},{"date":"2026-04-03","mean":32.787,"max":33.121,"min":32.608},{"date":"2026-04-04","mean":32.901,"max":33.204,"min":32.653},{"date":"2026-04-05","mean":32.971,"max":33.309,"min":32.736},{"date":"2026-04-06","mean":32.978,"max":33.238,"min":32.752},{"date":"2026-04-07","mean":32.899,"max":33.24,"min":32.695},{"date":"2026-04-08","mean":32.808,"max":33.116,"min":32.568},{"date":"2026-04-09","mean":32.842,"max":33.145,"min":32.598},{"date":"2026-04-10","mean":32.941,"max":33.206,"min":32.706},{"date":"2026-04-11","mean":33.005,"max":33.266,"min":32.85},{"date":"2026-04-12","mean":32.981,"max":33.204,"min":32.785},{"date":"2026-04-13","mean":33.038,"max":33.37,"min":32.779},{"date":"2026-04-14","mean":33.104,"max":33.413,"min":32.869},{"date":"2026-04-15","mean":33.113,"max":33.407,"min":32.867},{"date":"2026-04-16","mean":33.097,"max":33.552,"min":32.85},{"date":"2026-04-17","mean":33.037,"max":33.442,"min":32.692},{"date":"2026-04-18","mean":33.075,"max":33.422,"min":32.813},{"date":"2026-04-19","mean":33.026,"max":33.331,"min":32.766},{"date":"2026-04-20","mean":33.013,"max":33.223,"min":32.776},{"date":"2026-04-21","mean":33.179,"max":33.527,"min":32.947},{"date":"2026-04-22","mean":33.253,"max":33.419,"min":33.034},{"date":"2026-04-23","mean":33.273,"max":33.432,"min":33.083},{"date":"2026-04-24","mean":33.303,"max":33.576,"min":33.09},{"date":"2026-04-25","mean":33.393,"max":33.589,"min":33.185},{"date":"2026-04-26","mean":33.4,"max":33.643,"min":33.146},{"date":"2026-04-27","mean":33.428,"max":33.601,"min":33.26},{"date":"2026-04-28","mean":33.467,"max":33.733,"min":33.245},{"date":"2026-04-29","mean":33.504,"max":33.711,"min":33.354},{"date":"2026-04-30","mean":33.526,"max":33.792,"min":33.303},{"date":"2026-05-01","mean":33.6,"max":33.932,"min":33.413},{"date":"2026-05-02","mean":33.708,"max":34.195,"min":33.419},{"date":"2026-05-03","mean":33.8,"max":34.151,"min":33.55},{"date":"2026-05-04","mean":33.9,"max":34.223,"min":33.632},{"date":"2026-05-05","mean":33.926,"max":34.14,"min":33.716},{"date":"2026-05-06","mean":34.034,"max":34.281,"min":33.816},{"date":"2026-05-07","mean":33.688,"max":34.031,"min":33.348},{"date":"2026-05-08","mean":33.442,"max":33.656,"min":33.279},{"date":"2026-05-09","mean":33.505,"max":33.806,"min":33.364},{"date":"2026-05-10","mean":33.416,"max":33.612,"min":33.312},{"date":"2026-05-11","mean":33.468,"max":33.791,"min":33.242},{"date":"2026-05-12","mean":33.601,"max":33.927,"min":33.366},{"date":"2026-05-13","mean":33.42,"max":33.576,"min":33.29},{"date":"2026-05-14","mean":33.449,"max":33.772,"min":33.178},{"date":"2026-05-15","mean":33.445,"max":34.037,"min":33.167},{"date":"2026-05-16","mean":33.267,"max":33.5,"min":33.161},{"date":"2026-05-17","mean":33.31,"max":33.591,"min":33.064},{"date":"2026-05-18","mean":33.298,"max":33.493,"min":33.124},{"date":"2026-05-19","mean":33.258,"max":33.53,"min":33.063},{"date":"2026-05-20","mean":33.177,"max":33.362,"min":33.023},{"date":"2026-05-21","mean":33.01,"max":33.207,"min":32.808},{"date":"2026-05-22","mean":32.817,"max":32.993,"min":32.692},{"date":"2026-05-23","mean":32.707,"max":32.847,"min":32.527},{"date":"2026-05-24","mean":32.503,"max":32.668,"min":32.148},{"date":"2026-05-25","mean":32.597,"max":32.818,"min":32.407},{"date":"2026-05-26","mean":32.729,"max":33.029,"min":32.495},{"date":"2026-05-27","mean":32.897,"max":33.269,"min":32.613},{"date":"2026-05-28","mean":32.726,"max":32.931,"min":32.528},{"date":"2026-05-29","mean":32.531,"max":32.741,"min":32.411},{"date":"2026-05-30","mean":32.526,"max":32.894,"min":32.232},{"date":"2026-05-31","mean":32.422,"max":32.656,"min":32.235}];
+const TT_PROJ = [{"date":"2026-03-01","mean":30.446,"max":30.744,"min":30.225},{"date":"2026-03-02","mean":30.513,"max":30.79,"min":30.25},{"date":"2026-03-03","mean":30.614,"max":30.883,"min":30.376},{"date":"2026-03-04","mean":30.593,"max":30.92,"min":30.338},{"date":"2026-03-05","mean":30.74,"max":31.094,"min":30.48},{"date":"2026-03-06","mean":30.819,"max":31.077,"min":30.614},{"date":"2026-03-07","mean":30.915,"max":31.36,"min":30.681},{"date":"2026-03-08","mean":31.006,"max":31.165,"min":30.852},{"date":"2026-03-09","mean":30.983,"max":31.082,"min":30.908},{"date":"2026-03-10","mean":30.917,"max":31.092,"min":30.804},{"date":"2026-03-11","mean":30.919,"max":31.078,"min":30.748},{"date":"2026-03-12","mean":30.803,"max":30.937,"min":30.683},{"date":"2026-03-13","mean":30.67,"max":30.813,"min":30.586},{"date":"2026-03-14","mean":30.713,"max":30.916,"min":30.522},{"date":"2026-03-15","mean":30.777,"max":31.007,"min":30.566},{"date":"2026-03-16","mean":30.726,"max":30.908,"min":30.594},{"date":"2026-03-17","mean":30.663,"max":30.973,"min":30.514},{"date":"2026-03-18","mean":30.801,"max":31.12,"min":30.567},{"date":"2026-03-19","mean":31.011,"max":31.363,"min":30.765},{"date":"2026-03-20","mean":30.81,"max":30.966,"min":30.658},{"date":"2026-03-21","mean":30.643,"max":30.834,"min":30.527},{"date":"2026-03-22","mean":30.605,"max":30.763,"min":30.541},{"date":"2026-03-23","mean":30.649,"max":30.773,"min":30.578},{"date":"2026-03-24","mean":30.697,"max":30.961,"min":30.49},{"date":"2026-03-25","mean":30.742,"max":30.939,"min":30.599},{"date":"2026-03-26","mean":30.866,"max":31.073,"min":30.666},{"date":"2026-03-27","mean":31.084,"max":31.462,"min":30.837},{"date":"2026-03-28","mean":31.145,"max":31.36,"min":30.975},{"date":"2026-03-29","mean":31.326,"max":31.64,"min":31.047},{"date":"2026-03-30","mean":31.598,"max":31.842,"min":31.362},{"date":"2026-03-31","mean":31.811,"max":31.99,"min":31.628},{"date":"2026-04-01","mean":31.838,"max":32.092,"min":31.572},{"date":"2026-04-02","mean":31.972,"max":32.17,"min":31.75},{"date":"2026-04-03","mean":32.14,"max":32.474,"min":31.961},{"date":"2026-04-04","mean":32.254,"max":32.557,"min":32.006},{"date":"2026-04-05","mean":32.324,"max":32.662,"min":32.089},{"date":"2026-04-06","mean":32.331,"max":32.591,"min":32.105},{"date":"2026-04-07","mean":32.252,"max":32.593,"min":32.048},{"date":"2026-04-08","mean":32.161,"max":32.469,"min":31.921},{"date":"2026-04-09","mean":32.195,"max":32.498,"min":31.951},{"date":"2026-04-10","mean":32.294,"max":32.559,"min":32.059},{"date":"2026-04-11","mean":32.358,"max":32.619,"min":32.203},{"date":"2026-04-12","mean":32.334,"max":32.557,"min":32.138},{"date":"2026-04-13","mean":32.391,"max":32.723,"min":32.132},{"date":"2026-04-14","mean":32.457,"max":32.766,"min":32.222},{"date":"2026-04-15","mean":32.466,"max":32.76,"min":32.22},{"date":"2026-04-16","mean":32.45,"max":32.905,"min":32.203},{"date":"2026-04-17","mean":32.39,"max":32.795,"min":32.045},{"date":"2026-04-18","mean":32.428,"max":32.775,"min":32.166},{"date":"2026-04-19","mean":32.379,"max":32.684,"min":32.119},{"date":"2026-04-20","mean":32.366,"max":32.576,"min":32.129},{"date":"2026-04-21","mean":32.532,"max":32.88,"min":32.3},{"date":"2026-04-22","mean":32.606,"max":32.772,"min":32.387},{"date":"2026-04-23","mean":32.626,"max":32.785,"min":32.436},{"date":"2026-04-24","mean":32.656,"max":32.929,"min":32.443},{"date":"2026-04-25","mean":32.746,"max":32.942,"min":32.538},{"date":"2026-04-26","mean":32.753,"max":32.996,"min":32.499},{"date":"2026-04-27","mean":32.781,"max":32.954,"min":32.613},{"date":"2026-04-28","mean":32.82,"max":33.086,"min":32.598},{"date":"2026-04-29","mean":32.857,"max":33.064,"min":32.707},{"date":"2026-04-30","mean":32.879,"max":33.145,"min":32.656},{"date":"2026-05-01","mean":32.953,"max":33.285,"min":32.766},{"date":"2026-05-02","mean":33.061,"max":33.548,"min":32.772},{"date":"2026-05-03","mean":33.153,"max":33.504,"min":32.903},{"date":"2026-05-04","mean":33.253,"max":33.576,"min":32.985},{"date":"2026-05-05","mean":33.279,"max":33.493,"min":33.069},{"date":"2026-05-06","mean":33.387,"max":33.634,"min":33.169},{"date":"2026-05-07","mean":33.041,"max":33.384,"min":32.701},{"date":"2026-05-08","mean":32.795,"max":33.009,"min":32.632},{"date":"2026-05-09","mean":32.858,"max":33.159,"min":32.717},{"date":"2026-05-10","mean":32.769,"max":32.965,"min":32.665},{"date":"2026-05-11","mean":32.821,"max":33.144,"min":32.595},{"date":"2026-05-12","mean":32.954,"max":33.28,"min":32.719},{"date":"2026-05-13","mean":32.773,"max":32.929,"min":32.643},{"date":"2026-05-14","mean":32.802,"max":33.125,"min":32.531},{"date":"2026-05-15","mean":32.798,"max":33.39,"min":32.52},{"date":"2026-05-16","mean":32.62,"max":32.853,"min":32.514},{"date":"2026-05-17","mean":32.663,"max":32.944,"min":32.417},{"date":"2026-05-18","mean":32.651,"max":32.846,"min":32.477},{"date":"2026-05-19","mean":32.611,"max":32.883,"min":32.416},{"date":"2026-05-20","mean":32.53,"max":32.715,"min":32.376},{"date":"2026-05-21","mean":32.363,"max":32.56,"min":32.161},{"date":"2026-05-22","mean":32.17,"max":32.346,"min":32.045},{"date":"2026-05-23","mean":32.06,"max":32.2,"min":31.88},{"date":"2026-05-24","mean":31.856,"max":32.021,"min":31.501},{"date":"2026-05-25","mean":31.95,"max":32.171,"min":31.76},{"date":"2026-05-26","mean":32.082,"max":32.382,"min":31.848},{"date":"2026-05-27","mean":32.25,"max":32.622,"min":31.966},{"date":"2026-05-28","mean":32.079,"max":32.284,"min":31.881},{"date":"2026-05-29","mean":31.884,"max":32.094,"min":31.764},{"date":"2026-05-30","mean":31.879,"max":32.247,"min":31.585},{"date":"2026-05-31","mean":31.775,"max":32.009,"min":31.588}];
+const TT_OUTFALL = [{"date":"2026-03-01","mean":36.226,"max":36.524},{"date":"2026-03-02","mean":36.293,"max":36.57},{"date":"2026-03-03","mean":36.394,"max":36.663},{"date":"2026-03-04","mean":36.373,"max":36.7},{"date":"2026-03-05","mean":36.52,"max":36.874},{"date":"2026-03-06","mean":36.599,"max":36.857},{"date":"2026-03-07","mean":36.695,"max":37.14},{"date":"2026-03-08","mean":36.786,"max":36.945},{"date":"2026-03-09","mean":36.763,"max":36.862},{"date":"2026-03-10","mean":36.697,"max":36.872},{"date":"2026-03-11","mean":36.699,"max":36.858},{"date":"2026-03-12","mean":36.583,"max":36.717},{"date":"2026-03-13","mean":36.45,"max":36.593},{"date":"2026-03-14","mean":36.493,"max":36.696},{"date":"2026-03-15","mean":36.557,"max":36.787},{"date":"2026-03-16","mean":36.506,"max":36.688},{"date":"2026-03-17","mean":36.443,"max":36.753},{"date":"2026-03-18","mean":36.581,"max":36.9},{"date":"2026-03-19","mean":36.791,"max":37.143},{"date":"2026-03-20","mean":36.59,"max":36.746},{"date":"2026-03-21","mean":36.423,"max":36.614},{"date":"2026-03-22","mean":36.385,"max":36.543},{"date":"2026-03-23","mean":36.429,"max":36.553},{"date":"2026-03-24","mean":36.477,"max":36.741},{"date":"2026-03-25","mean":36.522,"max":36.719},{"date":"2026-03-26","mean":36.646,"max":36.853},{"date":"2026-03-27","mean":36.864,"max":37.242},{"date":"2026-03-28","mean":36.925,"max":37.14},{"date":"2026-03-29","mean":37.106,"max":37.42},{"date":"2026-03-30","mean":37.378,"max":37.622},{"date":"2026-03-31","mean":37.591,"max":37.77},{"date":"2026-04-01","mean":37.618,"max":37.872},{"date":"2026-04-02","mean":37.752,"max":37.95},{"date":"2026-04-03","mean":37.92,"max":38.254},{"date":"2026-04-04","mean":38.034,"max":38.337},{"date":"2026-04-05","mean":38.104,"max":38.442},{"date":"2026-04-06","mean":38.111,"max":38.371},{"date":"2026-04-07","mean":38.032,"max":38.373},{"date":"2026-04-08","mean":37.941,"max":38.249},{"date":"2026-04-09","mean":37.975,"max":38.278},{"date":"2026-04-10","mean":38.074,"max":38.339},{"date":"2026-04-11","mean":38.138,"max":38.399},{"date":"2026-04-12","mean":38.114,"max":38.337},{"date":"2026-04-13","mean":38.171,"max":38.503},{"date":"2026-04-14","mean":38.237,"max":38.546},{"date":"2026-04-15","mean":38.246,"max":38.54},{"date":"2026-04-16","mean":38.23,"max":38.685},{"date":"2026-04-17","mean":38.17,"max":38.575},{"date":"2026-04-18","mean":38.208,"max":38.555},{"date":"2026-04-19","mean":38.159,"max":38.464},{"date":"2026-04-20","mean":38.146,"max":38.356},{"date":"2026-04-21","mean":38.312,"max":38.66},{"date":"2026-04-22","mean":38.386,"max":38.552},{"date":"2026-04-23","mean":38.406,"max":38.565},{"date":"2026-04-24","mean":38.436,"max":38.709},{"date":"2026-04-25","mean":38.526,"max":38.722},{"date":"2026-04-26","mean":38.533,"max":38.776},{"date":"2026-04-27","mean":38.561,"max":38.734},{"date":"2026-04-28","mean":38.6,"max":38.866},{"date":"2026-04-29","mean":38.637,"max":38.844},{"date":"2026-04-30","mean":38.659,"max":38.925},{"date":"2026-05-01","mean":38.733,"max":39.065},{"date":"2026-05-02","mean":38.841,"max":39.328},{"date":"2026-05-03","mean":38.933,"max":39.284},{"date":"2026-05-04","mean":39.033,"max":39.356},{"date":"2026-05-05","mean":39.059,"max":39.273},{"date":"2026-05-06","mean":39.167,"max":39.414},{"date":"2026-05-07","mean":38.821,"max":39.164},{"date":"2026-05-08","mean":38.575,"max":38.789},{"date":"2026-05-09","mean":38.638,"max":38.939},{"date":"2026-05-10","mean":38.549,"max":38.745},{"date":"2026-05-11","mean":38.601,"max":38.924},{"date":"2026-05-12","mean":38.734,"max":39.06},{"date":"2026-05-13","mean":38.553,"max":38.709},{"date":"2026-05-14","mean":38.582,"max":38.905},{"date":"2026-05-15","mean":38.578,"max":39.17},{"date":"2026-05-16","mean":38.4,"max":38.633},{"date":"2026-05-17","mean":38.443,"max":38.724},{"date":"2026-05-18","mean":38.431,"max":38.626},{"date":"2026-05-19","mean":38.391,"max":38.663},{"date":"2026-05-20","mean":38.31,"max":38.495},{"date":"2026-05-21","mean":38.143,"max":38.34},{"date":"2026-05-22","mean":37.95,"max":38.126},{"date":"2026-05-23","mean":37.84,"max":37.98},{"date":"2026-05-24","mean":37.636,"max":37.801},{"date":"2026-05-25","mean":37.73,"max":37.951},{"date":"2026-05-26","mean":37.862,"max":38.162},{"date":"2026-05-27","mean":38.03,"max":38.402},{"date":"2026-05-28","mean":37.859,"max":38.064},{"date":"2026-05-29","mean":37.664,"max":37.874},{"date":"2026-05-30","mean":37.659,"max":38.027},{"date":"2026-05-31","mean":37.555,"max":37.789}];
+
+const TT_projDict = {};
+TT_PROJ.forEach(d => TT_projDict[d.date] = d);
+const TT_2024Dict = {};
+TT_2024.forEach(d => TT_2024Dict[d.date] = d);
+
+let TT_ACTUAL = [];
+const TT_LABELS = TT_2024.map(d => { const dt = new Date(d.date); return `${dt.getDate()} ${['Jan','Feb','Mar','Apr','May'][dt.getMonth()]}`; });
+
+// ── CHARTS ──
+let ttMain, ttDev, omProjChart, omActualChart;
+
+function buildTTCharts() {
+  // Main trend chart
+  ttMain = new Chart(document.getElementById('ttMainChart').getContext('2d'), {
+    type:'line',
+    data:{
+      labels:TT_LABELS,
+      datasets:[
+        {label:'2024 Max',data:TT_2024.map(d=>d.max),borderColor:'transparent',backgroundColor:'rgba(176,184,192,0.12)',fill:'+1',pointRadius:0,tension:0.3},
+        {label:'2024 Min',data:TT_2024.map(d=>d.min),borderColor:'transparent',fill:false,pointRadius:0,tension:0.3},
+        {label:'2024 Pattern',data:TT_2024.map(d=>d.mean),borderColor:'#B0B8C0',borderDash:[5,4],borderWidth:1.5,backgroundColor:'transparent',fill:false,pointRadius:0,tension:0.3},
+        {label:'Proj Max',data:TT_PROJ.map(d=>d.max),borderColor:'transparent',backgroundColor:'rgba(46,134,193,0.10)',fill:'+1',pointRadius:0,tension:0.3},
+        {label:'Proj Min',data:TT_PROJ.map(d=>d.min),borderColor:'transparent',fill:false,pointRadius:0,tension:0.3},
+        {label:'2026 Projection',data:TT_PROJ.map(d=>d.mean),borderColor:'#2E86C1',borderWidth:2,backgroundColor:'transparent',fill:false,pointRadius:0,tension:0.3},
+        {label:'Actual Max',data:TT_2024.map(d=>{const a=TT_ACTUAL.find(x=>x.date===d.date);return a?a.max:null;}),borderColor:'transparent',backgroundColor:'rgba(192,57,43,0.12)',fill:'+1',pointRadius:0,tension:0.3},
+        {label:'Actual Min',data:TT_2024.map(d=>{const a=TT_ACTUAL.find(x=>x.date===d.date);return a?a.min:null;}),borderColor:'transparent',fill:false,pointRadius:0,tension:0.3},
+        {label:'2026 Actual',data:TT_2024.map(d=>{const a=TT_ACTUAL.find(x=>x.date===d.date);return a?a.mean:null;}),borderColor:'#C0392B',borderWidth:2,backgroundColor:'transparent',fill:false,pointRadius:2,pointHoverRadius:4,pointBackgroundColor:'transparent',pointBorderColor:'#C0392B',pointBorderWidth:1.5,tension:0.3},
+        {label:'Load Red. 33.8°C',data:TT_2024.map(()=>33.8),borderColor:'rgba(230,126,34,0.5)',borderDash:[3,3],borderWidth:1.5,backgroundColor:'transparent',fill:false,pointRadius:0},
+        {label:'Low-S 33.2°C',data:TT_2024.map(()=>33.2),borderColor:'rgba(46,134,193,0.35)',borderDash:[3,3],borderWidth:1.5,backgroundColor:'transparent',fill:false,pointRadius:0},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{filter:i=>['2024 Pattern','2026 Projection','2026 Actual'].includes(i.dataset.label),callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y?.toFixed(3)}°C`}}},
+      scales:{
+        x:{grid:{color:'#F0F0F0'},ticks:{font:{family:'JetBrains Mono',size:8},maxTicksLimit:18,maxRotation:45}},
+        y:{min:29.5,title:{display:true,text:'CW Inlet (°C)',font:{family:'DM Sans',size:10}},grid:{color:'#F0F0F0'},ticks:{font:{family:'JetBrains Mono',size:9}}}
+      }
+    }
+  });
+
+  // Deviation chart
+  ttDev = new Chart(document.getElementById('ttDevChart').getContext('2d'), {
+    type:'bar',
+    data:{labels:[],datasets:[{label:'Actual − Proj',data:[],backgroundColor:[],borderColor:[],borderWidth:1,borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`Δ: ${c.parsed.y>0?'+':''}${c.parsed.y}°C`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{family:'JetBrains Mono',size:8}}},
+        y:{title:{display:true,text:'Δ°C',font:{family:'DM Sans',size:9}},grid:{color:'#F0F0F0'},ticks:{font:{family:'JetBrains Mono',size:9}},
+          afterDataLimits:ax=>{const m=Math.max(Math.abs(ax.min),Math.abs(ax.max),0.3);ax.min=-m;ax.max=m;}}
+      }
+    }
+  });
+
+  // Outfall projection chart
+  omProjChart = new Chart(document.getElementById('omProjChart').getContext('2d'), {
+    type:'line',
+    data:{
+      labels:TT_LABELS,
+      datasets:[
+        {label:'Proj. Outfall Max (FGD 50%)',data:TT_OUTFALL.map(d=>d.max),borderColor:'rgba(230,126,34,0.9)',borderWidth:2,backgroundColor:'rgba(230,126,34,0.08)',fill:true,tension:0.3,pointRadius:0},
+        {label:'Proj. Outfall Mean',data:TT_OUTFALL.map(d=>d.mean),borderColor:'rgba(46,134,193,0.6)',borderWidth:1.5,backgroundColor:'transparent',fill:false,tension:0.3,pointRadius:0},
+        {label:'EIA 40.0°C',data:TT_OUTFALL.map(()=>40.0),borderColor:'rgba(192,57,43,0.7)',borderDash:[4,3],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'},
+        {label:'Alarm 39.8°C',data:TT_OUTFALL.map(()=>39.8),borderColor:'rgba(230,126,34,0.5)',borderDash:[3,3],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{family:'DM Sans',size:10},boxWidth:12}}},
+      scales:{
+        x:{grid:{color:'#F0F0F0'},ticks:{font:{family:'JetBrains Mono',size:8},maxTicksLimit:18,maxRotation:45}},
+        y:{min:35,title:{display:true,text:'Outfall (°C)',font:{family:'DM Sans',size:10}},grid:{color:'#F0F0F0'},ticks:{font:{family:'JetBrains Mono',size:9}}}
+      }
+    }
+  });
+
+  // Actual outfall chart
+  omActualChart = new Chart(document.getElementById('omActualChart').getContext('2d'), {
+    type:'line',
+    data:{labels:[],datasets:[
+      {label:'Actual Outfall (mean)',data:[],borderColor:'#E67E22',borderWidth:2,backgroundColor:'rgba(230,126,34,0.1)',fill:true,tension:0.3,pointRadius:3},
+      {label:'Actual Outlet (mean)',data:[],borderColor:'#2E86C1',borderWidth:1.5,backgroundColor:'transparent',fill:false,tension:0.3,pointRadius:2},
+      {label:'EIA 40.0°C',data:[],borderColor:'rgba(192,57,43,0.6)',borderDash:[4,3],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{family:'DM Sans',size:10},boxWidth:12}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{family:'JetBrains Mono',size:9}}},
+        y:{min:36,title:{display:true,text:'Temperature (°C)',font:{family:'DM Sans',size:10}},grid:{color:'#F0F0F0'},ticks:{font:{family:'JetBrains Mono',size:9}}}
+      }
+    }
+  });
+
+  buildOMTable();
+}
+
+// ── OUTFALL TABLE (FIXED) ──
+function buildOMTable() {
+  const tbody = document.getElementById('omTableBody');
+  tbody.innerHTML = '';
+  TT_OUTFALL.filter(d => d.date >= '2026-04-01').forEach(d => {
+    const proj2024 = TT_2024Dict[d.date];
+    const projInlet = proj2024 ? proj2024.max - 0.647 : null;  // projected inlet max
+    const projOutlet = projInlet ? projInlet + 6.2 : null;      // outlet = inlet + 6.2
+    const projOutfall = d.max;                                   // outfall (FGD 50%) = from DATA_OUTFALL
+    const margin = 40.0 - projOutfall;
+    const riskTag = margin < 0.5 ? `<span class="tag tag-warn" style="font-size:9px">NARROW ⚠</span>` : `<span class="tag tag-ok" style="font-size:9px">OK ✓</span>`;
+    tbody.innerHTML += `<tr>
+      <td style="font-family:var(--mono);font-size:10px">${d.date.slice(5)}</td>
+      <td class="num">${projInlet ? projInlet.toFixed(3)+'°C' : '—'}</td>
+      <td class="num">${projOutlet ? projOutlet.toFixed(3)+'°C' : '—'}</td>
+      <td class="num" style="font-weight:600">${projOutfall.toFixed(3)}°C</td>
+      <td class="num" style="color:${margin<0.5?'var(--warn)':'var(--green)'};font-weight:600">${margin>0?'+':''}${margin.toFixed(3)}°C</td>
+      <td>${riskTag}</td>
+    </tr>`;
+  });
+}
+
+// ── REFRESH AFTER DATA LOAD ──
+function ttRefresh() {
+  if (!ttMain) return;
+  ttMain.data.datasets[6].data = TT_2024.map(d=>{const a=TT_ACTUAL.find(x=>x.date===d.date);return a?a.max:null;});
+  ttMain.data.datasets[7].data = TT_2024.map(d=>{const a=TT_ACTUAL.find(x=>x.date===d.date);return a?a.min:null;});
+  ttMain.data.datasets[8].data = TT_2024.map(d=>{const a=TT_ACTUAL.find(x=>x.date===d.date);return a?a.mean:null;});
+  ttMain.update();
+
+  const labs   = TT_ACTUAL.map(d=>d.date.slice(5));
+  const deltas = TT_ACTUAL.map(d=>{const p=TT_projDict[d.date];return p?+(d.mean-p.mean).toFixed(3):null;});
+  ttDev.data.labels = labs;
+  ttDev.data.datasets[0].data = deltas;
+  ttDev.data.datasets[0].backgroundColor = deltas.map(v=>v>0?'rgba(230,126,34,0.7)':'rgba(26,122,74,0.7)');
+  ttDev.data.datasets[0].borderColor      = deltas.map(v=>v>0?'#E67E22':'#1A7A4A');
+  ttDev.update();
+
+  const ofLabs  = TT_ACTUAL.map(d=>d.date.slice(5));
+  omActualChart.data.labels = ofLabs;
+  omActualChart.data.datasets[0].data = TT_ACTUAL.map(d=>d.outfall_mean);
+  omActualChart.data.datasets[1].data = TT_ACTUAL.map(d=>d.outlet_mean);
+  omActualChart.data.datasets[2].data = ofLabs.map(()=>40.0);
+  omActualChart.update();
+
+  ttBuildTable();
+  ttUpdateKPI();
+}
+
+function ttBuildTable() {
+  const tbody = document.getElementById('ttTrackBody');
+  tbody.innerHTML = '';
+  TT_ACTUAL.forEach(a => {
+    const p = TT_projDict[a.date];
+    if (!p) return;
+    const delta = +(a.mean - p.mean).toFixed(3);
+    const sign  = delta > 0 ? '+' : '';
+    const cls   = delta > 0.1 ? 'above' : delta < -0.1 ? 'below' : '';
+    const label = delta > 0.1 ? '▲ ABOVE' : delta < -0.1 ? '▼ BELOW' : '≈ ON TRACK';
+    const tagStyle = delta > 0.1 ? 'background:var(--warn-lt);color:var(--warn)' : delta < -0.1 ? 'background:var(--green-lt);color:var(--green)' : 'background:var(--blue-lt);color:var(--blue-md)';
+    tbody.innerHTML += `<tr>
+      <td style="font-family:var(--mono);font-size:10px">${a.date}</td>
+      <td class="num">${a.mean.toFixed(3)}°C</td>
+      <td class="num">${p.mean.toFixed(3)}°C</td>
+      <td class="num ${cls}">${sign}${delta}°C</td>
+      <td><span class="tag" style="font-size:9px;${tagStyle}">${label}</span></td>
+    </tr>`;
+  });
+  document.getElementById('tt_count').textContent = TT_ACTUAL.length + ' days';
+}
+
+function ttUpdateKPI() {
+  if (!TT_ACTUAL.length) return;
+  const deltas = TT_ACTUAL.map(d=>{const p=TT_projDict[d.date];return p?+(d.mean-p.mean):null;}).filter(Boolean);
+  if (!deltas.length) return;
+  const avg = +(deltas.reduce((a,b)=>a+b)/deltas.length).toFixed(3);
+  const maxD = +Math.max(...deltas).toFixed(3);
+  const maxDDate = TT_ACTUAL[deltas.indexOf(maxD)]?.date?.slice(5)||'—';
+  document.getElementById('tt_avgDelta').textContent = (avg>0?'+':'')+avg+'°C';
+  document.getElementById('tt_maxDelta').textContent = (maxD>0?'+':'')+maxD+'°C';
+  document.getElementById('tt_maxDeltaDate').textContent = maxDDate;
+  document.getElementById('tt_days').textContent = TT_ACTUAL.length;
+  document.getElementById('tt_daysRange').textContent = `${TT_ACTUAL[0].date.slice(5)} → ${TT_ACTUAL[TT_ACTUAL.length-1].date.slice(5)}`;
+  const trend = avg>0.2?'▲ ABOVE':avg<-0.2?'▼ BELOW':'≈ ON TRACK';
+  const trendSub = avg>0.2?'Tracking above projection':avg<-0.2?'Tracking below projection':'Within ±0.2°C';
+  document.getElementById('tt_trend').textContent = trend;
+  document.getElementById('tt_trendSub').textContent = trendSub;
+}
+
+// ── CSV AUTO-LOAD ──
+function setAL2(icon, msg, type='ok') {
+  const bar = document.getElementById('alBar2');
+  bar.className = 'al-bar'+(type==='warn'?' warn':type==='err'?' err':'');
+  document.getElementById('alIcon2').textContent = icon;
+  const msgEl = document.getElementById('alMsg2');
+  msgEl.textContent = msg;
+  msgEl.style.color = type==='ok'?'var(--green)':type==='warn'?'var(--warn)':'var(--red)';
+}
+
+async function loadCSV2() {
+  setAL2('⏳','Fetching seawater_data.csv …');
+  try {
+    const resp = await fetch(`seawater_data.csv?v=${Date.now()}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    const lines = text.trim().split('\n').slice(1);
+    const byDate = {};
+    lines.forEach(line => {
+      const p = line.split(',');
+      if (p.length < 2) return;
+      const date = p[0].trim().slice(0,10);
+      const inlet = parseFloat(p[1]);
+      if (isNaN(inlet)) return;
+      if (!byDate[date]) byDate[date]={inlets:[],outlets:[],outfalls:[]};
+      byDate[date].inlets.push(inlet);
+      const out = parseFloat(p[2]); if (!isNaN(out)) byDate[date].outlets.push(out);
+      const of2 = parseFloat(p[3]); if (!isNaN(of2)) byDate[date].outfalls.push(of2);
+    });
+    const avg=a=>a.length?+(a.reduce((s,v)=>s+v)/a.length).toFixed(3):null;
+    const mx=a=>a.length?+Math.max(...a).toFixed(3):null;
+    const mn=a=>a.length?+Math.min(...a).toFixed(3):null;
+    TT_ACTUAL = Object.keys(byDate).sort().map(date=>({
+      date,mean:avg(byDate[date].inlets),max:mx(byDate[date].inlets),min:mn(byDate[date].inlets),
+      outlet_mean:avg(byDate[date].outlets),outfall_mean:avg(byDate[date].outfalls)
+    }));
+    setAL2('✅',`Loaded ${TT_ACTUAL.length} days (${TT_ACTUAL[0].date} → ${TT_ACTUAL[TT_ACTUAL.length-1].date})`,'ok');
+    ttRefresh();
+  } catch(e) {
+    setAL2('⚠',`Could not fetch CSV: ${e.message} — use manual upload below`,'warn');
+  }
+}
+
+// ── FILE UPLOAD ──
+const ttVis = {t2024:true,tproj:true,tactual:true};
+const ttBtnColors = {t2024:'#B0B8C0', tproj:'#2E86C1', tactual:'#C0392B'};
+function ttToggle(key, btn) {
+  ttVis[key]=!ttVis[key];
+  const active = ttVis[key];
+  btn.dataset.active = active ? '1' : '0';
+  btn.style.opacity = active ? '1' : '0.35';
+  btn.style.background = active ? 'white' : '#f0f0f0';
+  const map={t2024:[0,1,2],tproj:[3,4,5],tactual:[6,7,8]};
+  map[key].forEach(i=>ttMain.data.datasets[i].hidden=!active);
+  ttMain.update();
+}
+
+function ttHandleFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      let rows = [];
+      if (file.name.toLowerCase().endsWith('.csv')) {
+        e.target.result.split('\n').slice(1).forEach(line => {
+          const p = line.split(',');
+          if (p.length < 2) return;
+          rows.push({dt:p[0].trim(),inlet:parseFloat(p[1]),outlet:parseFloat(p[2])||null,outfall:parseFloat(p[3])||null});
+        });
+      } else {
+        const wb = XLSX.read(e.target.result,{type:'array',cellDates:true});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        XLSX.utils.sheet_to_json(ws,{header:1}).slice(1).forEach(r=>{
+          if (!r[0]) return;
+          const dt = r[0] instanceof Date?r[0].toISOString().slice(0,16).replace('T',' '):String(r[0]).slice(0,16);
+          rows.push({dt,inlet:parseFloat(r[1]),outlet:parseFloat(r[2])||null,outfall:parseFloat(r[3])||null});
+        });
+      }
+      const byDate={};
+      rows.forEach(r=>{
+        const date=r.dt.slice(0,10);
+        if(isNaN(r.inlet))return;
+        if(!byDate[date])byDate[date]={inlets:[],outlets:[],outfalls:[]};
+        byDate[date].inlets.push(r.inlet);
+        if(r.outlet)byDate[date].outlets.push(r.outlet);
+        if(r.outfall)byDate[date].outfalls.push(r.outfall);
+      });
+      const avg=a=>a.length?+(a.reduce((s,v)=>s+v)/a.length).toFixed(3):null;
+      const mx=a=>a.length?+Math.max(...a).toFixed(3):null;
+      const mn=a=>a.length?+Math.min(...a).toFixed(3):null;
+      const newA=Object.keys(byDate).sort().map(date=>({
+        date,mean:avg(byDate[date].inlets),max:mx(byDate[date].inlets),min:mn(byDate[date].inlets),
+        outlet_mean:avg(byDate[date].outlets),outfall_mean:avg(byDate[date].outfalls)
+      }));
+      const existD=new Set(TT_ACTUAL.map(d=>d.date));
+      newA.forEach(r=>{if(!existD.has(r.date))TT_ACTUAL.push(r);else{const i=TT_ACTUAL.findIndex(x=>x.date===r.date);TT_ACTUAL[i]=r;}});
+      TT_ACTUAL.sort((a,b)=>a.date.localeCompare(b.date));
+      ttRefresh();
+      document.getElementById('ttDropzone').classList.add('loaded');
+      document.getElementById('ttUploadInfo').style.display='block';
+      document.getElementById('ttUploadDetail').textContent=`${newA.length} days from file · Total: ${TT_ACTUAL.length} days`;
+      setAL2('✅',`Updated from file: ${file.name} · ${TT_ACTUAL.length} days total`,'ok');
+    } catch(err){alert('Error: '+err.message);}
+  };
+  if(file.name.toLowerCase().endsWith('.csv'))reader.readAsText(file);
+  else reader.readAsArrayBuffer(file);
+}
+
+const ttDZ = document.getElementById('ttDropzone');
+ttDZ.addEventListener('dragover',e=>{e.preventDefault();ttDZ.classList.add('drag');});
+ttDZ.addEventListener('dragleave',()=>ttDZ.classList.remove('drag'));
+ttDZ.addEventListener('drop',e=>{e.preventDefault();ttDZ.classList.remove('drag');ttHandleFile(e.dataTransfer.files[0]);});
+
+// INIT new sections
+buildTTCharts();
+loadCSV2();
+</script>
+</body>
+</html>
